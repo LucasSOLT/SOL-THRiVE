@@ -144,7 +144,7 @@ function parseStripeSignature(header) {
 
 function computeStripeSignature(secret, timestamp, rawBuffer) {
   return crypto.createHmac('sha256', secret)
-    .update(Buffer.concat([Buffer.from(`${timestamp}.`, 'utf8'), rawBuffer]))
+    .update(Buffer.concat([Buffer.from(`${timestamp}.`, 'utf8'), Buffer.isBuffer(rawBuffer) ? rawBuffer : Buffer.from(String(rawBuffer), 'utf8')]))
     .digest('hex');
 }
 
