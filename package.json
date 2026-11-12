@@ -2,6 +2,9 @@
   "name": "sol-thrive",
   "version": "1.0.0",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "test": "node tests/run-all.js",
+    "lint": "node scripts/verify-site.js",
+    "verify": "npm run build && npm run lint && npm test"
   }
 }
