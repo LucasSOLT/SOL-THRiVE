@@ -97,7 +97,7 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            color: var(--accent-red);
+            color: #BE123C;
             margin-bottom: 0.35rem;
         }
 
@@ -245,7 +245,7 @@
         }
 
         .checklist-item-desc a {
-            color: var(--accent-blue);
+            color: #0356B8;
             font-weight: 600;
             text-decoration: underline;
             overflow-wrap: anywhere;
@@ -676,7 +676,7 @@
         }
 </style>
 </head>
-<body class="subpage-body onboarding-page">
+<body class="subpage-body onboarding-page"><a class="skip-to-content" href="#main-content">Skip to main content</a>
     <header class="header">
         <nav class="nav-left">
             <button class="hamburger" aria-label="Toggle menu">
@@ -728,7 +728,7 @@
         </div>
     </header>
 
-    <main class="page-content">
+    <main id="main-content" tabindex="-1" class="page-content">
         <div class="subpage-container">
             <!-- Hero Header -->
             <section class="subpage-hero">
@@ -935,7 +935,7 @@
                     </div>
                     <div class="trainer-stat-card">
                         <div class="trainer-stat-label">Cadence Status</div>
-                        <div class="trainer-stat-value" id="safesave-status-badge" style="font-size: 1.15rem; color: #10B981;">Flow State</div>
+                        <div class="trainer-stat-value" id="safesave-status-badge" style="font-size: 1.15rem; color: #047857;">Flow State</div>
                     </div>
                 </div>
 
@@ -1622,21 +1622,21 @@
                     if (pacingText) pacingText.textContent = 'Pacing Good — In the Flow';
                     if (statusBadge) {
                         statusBadge.textContent = 'Flow State';
-                        statusBadge.style.color = '#10B981';
+                        statusBadge.style.color = '#047857';
                     }
                 } else if (elapsedSeconds <= 110) {
                     pacingBar.classList.add('window');
                     if (pacingText) pacingText.textContent = 'Safe-Save Window — Press Enter soon to commit client memory!';
                     if (statusBadge) {
                         statusBadge.textContent = 'Optimal Window';
-                        statusBadge.style.color = '#F59E0B';
+                        statusBadge.style.color = '#B45309';
                     }
                 } else {
                     pacingBar.classList.add('overdue');
                     if (pacingText) pacingText.textContent = '⚠️ Safe-Save Overdue — Press Enter now!';
                     if (statusBadge) {
                         statusBadge.textContent = 'Overdue Alert';
-                        statusBadge.style.color = '#EF4444';
+                        statusBadge.style.color = '#B91C1C';
                     }
                 }
             }

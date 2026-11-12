@@ -32,7 +32,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --cream:#F9F6F0; --slate:#5B79A6; --slate-d:#3E5880; --sage:#9DB68C; --sage-d:#5B7F4A; --earth:#8A5A3B;
+  --cream:#F9F6F0; --slate:#46638F; --slate-d:#3E5880; --sage:#9DB68C; --sage-d:#5B7F4A; --earth:#8A5A3B;
   --pale:#E8EFF9; --gray:#4B5563; --ink:#18181B; --gold:#F5B82E; --violet:#7C2AE8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -257,10 +257,15 @@ h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spaci
     .session0-count { margin-left: 0; width: 100%; text-align: center; }
 }
 @media print{.session0-bar{display:none !important}}
+.skip-to-content{position:fixed;top:8px;left:8px;z-index:9999;padding:10px 16px;background:#18181B;color:#fff;font-weight:700;border-radius:999px;text-decoration:none;transform:translateY(-200%)}
+.skip-to-content:focus,.skip-to-content:focus-visible{transform:none;outline:3px solid var(--gold);outline-offset:2px}
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}}
+@media print{.skip-to-content{display:none !important}}
 </style>
 <script src="script.js" defer></script>
 </head>
-<body>
+<body><a class="skip-to-content" href="#main-content">Skip to main content</a>
 <div class="wrap">
   <header class="top">
     <a class="brand" href="mockup-landing.html">
@@ -276,7 +281,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spaci
     </nav>
   </header>
 
-  <main class="card">
+  <main id="main-content" tabindex="-1" class="card">
     <section class="col">
       <div class="box">
         <div class="tagrow"><span class="tag green">✓ Verified evidence</span><span class="thanks-line">✓ Thank you, <span id="nm">Friend</span>!</span></div>
@@ -304,6 +309,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spaci
           <video id="blueprint-video" class="video-el" poster="assets/sol-meadow-scene.jpg" playsinline loop muted preload="metadata">
             <source src="minds-eye-animated.webm" type="video/webm">
             <source src="minds-eye-animated.mp4" type="video/mp4">
+              <track kind="captions" src="assets/minds-eye-captions.vtt" srclang="en" label="English">
           </video>
           <button type="button" class="play" id="play-blueprint-btn" aria-label="Play video"><span class="play-badge" id="blueprint-play-icon">▶</span></button>
           <div class="video-caption" id="blueprint-caption">“How verified clinical &amp; family evidence unlocks regional THRiVE grants…”</div>
@@ -317,7 +323,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spaci
       <div class="box vote">
         <span class="tag">🗳️ Vote · Shape community blueprint</span>
         <h2>Cast Your Vote</h2>
-        <div class="sectitle" style="margin:0">Community priorities <span id="vote-prompt-hint" style="float:right;color:#b8860b;text-transform:none;letter-spacing:0">Select 1 or more ↓</span></div>
+        <div class="sectitle" style="margin:0">Community priorities <span id="vote-prompt-hint" style="float:right;color:#855800;text-transform:none;letter-spacing:0">Select 1 or more ↓</span></div>
         <label class="opt" data-priority="Transform Community Spaces"><div><strong>🏫 Transform Community Spaces</strong><span>Turn schools, recreation centers, and third spaces into high-safety sanctuaries where youth and families can reset and thrive.</span></div><span class="vote-badge" data-base="38">38 votes</span><i class="dot"></i></label>
         <label class="opt" data-priority="Empower Mentors"><div><strong>⚡ Empower Mentors</strong><span>Equip clinicians, coaches, and youth mentors with HIPAA-guardrailed Personos AI co-pilots and Strengths Model tools between sessions.</span></div><span class="vote-badge" data-base="44">44 votes</span><i class="dot"></i></label>
         <label class="opt" data-priority="Heal Our Neighborhoods"><div><strong>💛 Heal Our Neighborhoods</strong><span>Fund 6-week THRiVE parent-and-mentor cohorts that reduce family friction by 60% and build neighborhood-level resilience.</span></div><span class="vote-badge" data-base="41">41 votes</span><i class="dot"></i></label>

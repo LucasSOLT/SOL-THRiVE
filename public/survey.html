@@ -178,7 +178,7 @@ var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.sessi
         }
     </style>
 </head>
-<body class="survey-page min-h-screen flex flex-col relative">
+<body class="survey-page min-h-screen flex flex-col relative"><a class="skip-to-content" href="#main-content">Skip to main content</a>
 
     <!-- Brand Header -->
     <header class="header">
@@ -260,17 +260,17 @@ var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.sessi
         <!-- Step Progress Pills -->
         <div class="flex flex-wrap items-center justify-center gap-2 mt-5" id="step-progress-bar">
             <span class="step-pill active" id="pill-step-0">Intro</span>
-            <span class="text-slate-400 text-xs font-bold">&rarr;</span>
+            <span class="text-slate-600 text-xs font-bold" aria-hidden="true">&rarr;</span>
             <span class="step-pill" id="pill-step-1">1. What Is It?</span>
-            <span class="text-slate-400 text-xs font-bold">&rarr;</span>
+            <span class="text-slate-600 text-xs font-bold" aria-hidden="true">&rarr;</span>
             <span class="step-pill" id="pill-step-2">2. What Is It Like?</span>
-            <span class="text-slate-400 text-xs font-bold">&rarr;</span>
+            <span class="text-slate-600 text-xs font-bold" aria-hidden="true">&rarr;</span>
             <span class="step-pill" id="pill-step-3">3. Flow Score</span>
             <button type="button" onclick="openSurveySettingsModal()" id="open-survey-settings-btn" class="ml-2 p-2 bg-[#FAF8F3] text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full border-2 border-[#1E2430] transition-colors text-sm leading-none" title="AI & Voice Settings" aria-label="AI & Voice Settings">⚙️</button>
         </div>
     </section>
 
-    <main class="flex-grow w-full max-w-5xl mx-auto p-4 md:p-8">
+    <main id="main-content" tabindex="-1" class="flex-grow w-full max-w-5xl mx-auto p-4 md:p-8">
         
         <!-- ================= AUTO-SAVE RESUME BANNER ================= -->
         <div id="resume-survey-banner" class="hidden resume-progress-banner max-w-2xl mx-auto mb-6" role="status" aria-live="polite">

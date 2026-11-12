@@ -126,7 +126,7 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
 .dow,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .dow span{text-align:center;font-size:.72rem;font-weight:600;color:var(--slate);padding:4px 0}
 .day{aspect-ratio:1;border-radius:12px;border:1.5px solid transparent;background:transparent;font-family:'Inter';font-weight:600;font-size:.92rem;color:var(--ink);cursor:pointer;transition:.15s}
-.day:disabled{color:#B8B4AA;cursor:not-allowed;font-weight:400}
+.day:disabled{color:#6E6A60;cursor:not-allowed;font-weight:400} .field input::placeholder{color:#52525B;opacity:1} .skip-to-content{position:fixed;top:8px;left:8px;z-index:9999;padding:10px 16px;background:#18181B;color:#fff;font-weight:700;border-radius:999px;text-decoration:none;transform:translateY(-200%)} .skip-to-content:focus,.skip-to-content:focus-visible{transform:none;outline:3px solid #F5B82E;outline-offset:2px} :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--violet);outline-offset:2px}
 .day:not(:disabled){background:#fff;border-color:var(--ink);box-shadow:0 2px 0 var(--ink)}
 .day:not(:disabled):hover{transform:translateY(-1px)}
 .day.sel{background:var(--violet)!important;color:#fff}
@@ -216,7 +216,7 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
 }
 </style>
 </head>
-<body>
+<body><a class="skip-to-content" href="#main-content">Skip to main content</a>
 
 <nav>
   <div class="nav-in">
@@ -229,7 +229,7 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
   </div>
 </nav>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="stepper" id="stepper" aria-label="Progress">
     <div data-s="1" class="on">1 · Audit</div><div data-s="2">2 · Your Details</div><div data-s="3">3 · Consensus</div><div data-s="4">4 · Book</div><div data-s="5">5 · Checkout</div>
   </div>
@@ -249,6 +249,7 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
           <video id="story" poster="assets/sol-meadow-scene.jpg" controls playsinline loop preload="metadata">
             <source src="minds-eye-animated.webm" type="video/webm">
             <source src="minds-eye-animated.mp4" type="video/mp4">
+              <track kind="captions" src="assets/minds-eye-captions.vtt" srclang="en" label="English">
           </video>
           <span class="vtag">Every voice counts</span>
         </div>

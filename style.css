@@ -6,7 +6,7 @@
     --bg-slate-soft: #F8FAFC;
     --text-color: #141824;
     --text-muted: #4B5563;
-    --text-light: #6B7280;
+    --text-light: #4B5563;
     --accent-red: #E11D48;
     --accent-magenta: #D81159;
     --accent-purple: #8B2FC9;
@@ -2437,12 +2437,12 @@ a {
 
 .footer .separator {
     margin: 0 10px;
-    color: #4B5563;
+    color: #9CA3AF;
 }
 
 .footer-copyright {
     font-size: 0.82rem;
-    color: #6B7280;
+    color: #9CA3AF;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding-top: 1.25rem;
     width: 100%;
@@ -4616,4 +4616,54 @@ body.nav-open {
     .session0-step { flex-direction: column; justify-content: center; gap: 0.1rem; padding: 0.4rem 0.3rem; text-align: center; border-radius: 12px; min-height: 64px; }
     .session0-step .s0-name { font-size: 0.8rem; line-height: 1.15; }
     .session0-count { margin-left: 0; width: 100%; text-align: center; }
+}
+
+/* ---- WCAG 2.1 AA: skip link, focus-visible rings, placeholders, reduced motion ---- */
+.skip-to-content {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100000;
+    padding: 0.65rem 1.1rem;
+    border-radius: 999px;
+    background: #141824;
+    color: #FFFFFF;
+    font-family: var(--font-heading, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+    border: 2px solid #FDE100;
+    transform: translateY(-220%);
+}
+.skip-to-content:focus,
+.skip-to-content:focus-visible {
+    transform: translateY(0);
+    outline: 3px solid #0478fe;
+    outline-offset: 2px;
+}
+input::placeholder,
+textarea::placeholder {
+    color: #4B5563;
+    opacity: 1;
+}
+:where(a, button, input, select, textarea, summary, [role="button"], [role="radio"], [role="tab"], [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 3px solid #0478fe;
+    outline-offset: 2px;
+}
+.checklist-item:focus-within,
+.dap-step:focus-within,
+.dap-board-item:focus-within {
+    outline: 3px solid #0478fe;
+    outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+@media print {
+    .skip-to-content { display: none !important; }
 }
