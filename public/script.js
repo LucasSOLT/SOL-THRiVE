@@ -694,11 +694,62 @@ const initThriveUI = () => {
         }
     };
 
+    const getScenarioQuote = (card) => {
+        const quoteEl = card ? card.querySelector('.scenario-prompt-quote') : null;
+        return quoteEl ? quoteEl.textContent.trim().replace(/^["\u201C]+|["\u201D]+$/g, '').trim() : '';
+    };
+
+    const buildPersonosCasePrompt = (card) => {
+        if (!card) return '';
+        const titleEl = card.querySelector('.scenario-card-header h2');
+        const title = titleEl ? titleEl.textContent.trim().replace(/^\d+\.\s*/, '') : 'Clinical case';
+        const domain = card.getAttribute('data-case-domain') || 'General practice';
+        const quote = getScenarioQuote(card);
+        if (!quote) return '';
+        return [
+            'You are Personos, supporting a licensed practitioner (therapist, coach, case manager, or recovery specialist) in the 167 hours between sessions.',
+            '',
+            'CASE: ' + title + ' \u2014 Domain: ' + domain.replace(/&amp;/g, '&'),
+            'Client statement (fictional training scenario): "' + quote + '"',
+            '',
+            'Please respond in this order:',
+            '1. INSIGHT: a 2-3 sentence formulation of the friction (no diagnosis), moving the client from reactive character toward the grounded Observer.',
+            '2. FIVE G.A.P.S. NEXT STEPS: each small enough to finish in 15 minutes, one each through a Stoic/Philosophical, Faith/Spiritual, Strengths-First Behavioral, and Executive/Pragmatic lens, plus one creative option.',
+            '3. 167-HOUR ACTION BOARD: pick the 1-3 best steps and place each in a time window (within 24 hours, days 2-3, days 4-6).',
+            '4. DAP NOTE: a brief Data / Assessment / Plan note the practitioner can paste into the record.',
+            '',
+            'If the "Other Notes" section contains Flow Survey, THRiVE Report, or HoPE Index content, use it to personalize every step.',
+            'If any risk to self or others appears, remind the practitioner to follow their crisis protocol before continuing.'
+        ].join('\n');
+    };
+
+    // "Open in Flow Survey / THRiVE Report": seed the next page via sessionStorage (never touches frozen dossier keys)
+    document.querySelectorAll('[data-case-seed]').forEach(link => {
+        link.addEventListener('click', () => {
+            try {
+                const card = link.closest('.scenario-card');
+                const quote = getScenarioQuote(card);
+                if (!quote || typeof sessionStorage === 'undefined') return;
+                sessionStorage.setItem('thrive_case_seed_v1', JSON.stringify({
+                    text: quote.slice(0, 1200),
+                    target: link.getAttribute('data-case-seed') || 'survey',
+                    ts: Date.now()
+                }));
+            } catch (_) {
+                // Storage unavailable (private mode / quota): navigation still works without seeding
+            }
+        });
+    });
+
     copyButtons.forEach(btn => {
+        const defaultCopyLabel = (btn.querySelector('.copy-btn-label') || btn).textContent.trim() || 'Copy Scenario';
         btn.addEventListener('click', async () => {
             const card = btn.closest('.scenario-card');
             const promptBox = card ? card.querySelector('.scenario-prompt-box') : null;
             let textToCopy = btn.getAttribute('data-scenario-text') || '';
+            if (!textToCopy && btn.hasAttribute('data-case-prompt')) {
+                textToCopy = buildPersonosCasePrompt(card);
+            }
             if (!textToCopy && promptBox) {
                 const paragraphs = Array.from(promptBox.querySelectorAll('p'))
                     .map(p => p.textContent.trim())
@@ -743,9 +794,9 @@ const initThriveUI = () => {
             btn._copyTimeout = setTimeout(() => {
                 btn.classList.remove('is-copied', 'is-copy-fallback');
                 if (labelEl) {
-                    labelEl.textContent = 'Copy Scenario';
+                    labelEl.textContent = defaultCopyLabel;
                 } else {
-                    btn.textContent = 'Copy Scenario';
+                    btn.textContent = defaultCopyLabel;
                 }
                 if (copyIcon) copyIcon.style.display = 'inline-block';
                 if (checkIcon) checkIcon.style.display = 'none';

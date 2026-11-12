@@ -4516,3 +4516,32 @@ body.nav-open {
     }
 }
 
+
+/* ---- Clinical case tools (scenario pages) ---- */
+.copy-case-prompt-btn {
+    background: #ffffff;
+    color: var(--ink-border, #1E2430);
+}
+.copy-case-prompt-btn:hover { background: #F5EBFD; }
+.copy-case-prompt-btn.is-copied { background: #059669; color: #ffffff; }
+.copy-case-prompt-btn.is-copy-fallback { background: #D97706; color: #ffffff; }
+.case-open-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 2px solid var(--ink-border, #1E2430);
+    background: #EBF5FF;
+    color: #0356b8;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+.case-open-link:hover { background: #DBEAFE; }
+.scenario-actions .scenario-copy-hint { flex-basis: 100%; }
+@media (max-width: 480px) {
+    .scenario-actions { flex-direction: column; align-items: stretch; }
+    .scenario-actions .copy-scenario-btn, .scenario-actions .case-open-link { justify-content: center; text-align: center; white-space: normal; }
+}

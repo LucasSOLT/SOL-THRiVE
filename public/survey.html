@@ -2448,10 +2448,33 @@
             } catch (e) {}
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadFlowSurveyStateOnBoot);
-        } else {
+        // Practitioner Lab case scenarios can seed the friction description (sessionStorage only; never overwrites saved work)
+        function applyCaseSeedOnBoot() {
+            try {
+                if (typeof sessionStorage === 'undefined') return;
+                const raw = sessionStorage.getItem('thrive_case_seed_v1');
+                if (!raw) return;
+                sessionStorage.removeItem('thrive_case_seed_v1');
+                const seed = JSON.parse(raw);
+                if (!seed || typeof seed.text !== 'string' || seed.target !== 'survey') return;
+                if (typeof seed.ts === 'number' && Date.now() - seed.ts > 60 * 60 * 1000) return;
+                const textArea = document.getElementById('problem-description');
+                if (!textArea || textArea.value.trim()) return;
+                if (savedFlowSurveySnapshot && savedFlowSurveySnapshot.problemDescription && String(savedFlowSurveySnapshot.problemDescription).trim()) return;
+                textArea.value = seed.text.slice(0, 1200);
+                textArea.dispatchEvent(new Event('input', { bubbles: true }));
+            } catch (e) {}
+        }
+
+        function bootFlowSurvey() {
             loadFlowSurveyStateOnBoot();
+            applyCaseSeedOnBoot();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bootFlowSurvey);
+        } else {
+            bootFlowSurvey();
         }
     </script>
 </body>
