@@ -1,3 +1,11 @@
+const { rateLimit } = require("./_shared");
+
+const MAX_CONTENTS_CHARS = 32000;
+const MAX_CONTENTS_ITEMS = 50;
+const MAX_SYSTEM_INSTRUCTION_CHARS = 8000;
+const MAX_TEXT_CHARS = 32000;
+const UPSTREAM_TIMEOUT_MS = 6000;
+
 const REVOKED_KEYS = new Set([
   "AIzaSyDhByu-gVi8PNLtDdl41ETxOmu2JOEVt8A",
   "sk_d2fc2ac281afdb8a56178f44c8ebca76f21da62f7a256bf8"
@@ -24,7 +32,10 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  if (!rateLimit(req, res, { name: "gemini", limit: 20 })) return;
+
   let body = req.body;
+  if (Buffer.isBuffer(body)) body = body.toString("utf8");
   if (typeof body === "string") {
     if (!body.trim()) {
       body = {};
@@ -37,7 +48,7 @@ module.exports = async function handler(req, res) {
       }
     }
   }
-  body = body || {};
+  if (!body || typeof body !== "object" || Array.isArray(body)) body = {};
 
   const headerKey = req.headers && req.headers["x-gemini-api-key"];
   const activeKey = sanitizeKey(
@@ -54,14 +65,38 @@ module.exports = async function handler(req, res) {
 
   let payload = null;
   if (Array.isArray(body.contents)) {
+    let contentsChars = 0;
+    try {
+      contentsChars = JSON.stringify(body.contents).length;
+    } catch (_) {
+      contentsChars = Infinity;
+    }
+    if (body.contents.length > MAX_CONTENTS_ITEMS || contentsChars > MAX_CONTENTS_CHARS) {
+      res.status(413).json({ error: `Payload too large (max ${MAX_CONTENTS_CHARS} characters)` });
+      return;
+    }
     payload = { contents: body.contents };
     if (body.systemInstruction) {
+      let sysChars = 0;
+      try {
+        sysChars = JSON.stringify(body.systemInstruction).length;
+      } catch (_) {
+        sysChars = Infinity;
+      }
+      if (sysChars > MAX_SYSTEM_INSTRUCTION_CHARS) {
+        res.status(413).json({ error: "systemInstruction too large" });
+        return;
+      }
       payload.systemInstruction = body.systemInstruction;
     }
   } else {
     const rawText = String(body.text || body.prompt || "").trim();
     if (!rawText) {
       res.status(400).json({ error: "Missing text or contents in request body" });
+      return;
+    }
+    if (rawText.length > MAX_TEXT_CHARS) {
+      res.status(413).json({ error: `Payload too large (max ${MAX_TEXT_CHARS} characters)` });
       return;
     }
     const promptText = body.prompt
@@ -81,7 +116,7 @@ module.exports = async function handler(req, res) {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 6000);
+  const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
 
   try {
     const upstream = await fetch(

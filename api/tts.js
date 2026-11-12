@@ -1,3 +1,16 @@
+const { rateLimit } = require("./_shared");
+
+const DEFAULT_MODEL_ID = "eleven_turbo_v2_5";
+const ALLOWED_MODEL_IDS = new Set([
+  "eleven_turbo_v2_5",
+  "eleven_turbo_v2",
+  "eleven_flash_v2_5",
+  "eleven_flash_v2",
+  "eleven_multilingual_v2",
+  "eleven_monolingual_v1",
+  "eleven_multilingual_v1"
+]);
+
 const REVOKED_KEYS = new Set([
   "AIzaSyDhByu-gVi8PNLtDdl41ETxOmu2JOEVt8A",
   "sk_d2fc2ac281afdb8a56178f44c8ebca76f21da62f7a256bf8"
@@ -11,6 +24,20 @@ function sanitizeKey(val) {
     return "";
   }
   return trimmed;
+}
+
+function clamp01(value, fallback) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(1, Math.max(0, n));
+}
+
+function sanitizeVoiceSettings(raw) {
+  const v = raw && typeof raw === "object" ? raw : {};
+  return {
+    stability: clamp01(v.stability, 0.5),
+    similarity_boost: clamp01(v.similarity_boost, 0.75)
+  };
 }
 
 function sanitizeVoiceId(rawId) {
@@ -34,7 +61,10 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  if (!rateLimit(req, res, { name: "tts", limit: 20 })) return;
+
   let body = req.body;
+  if (Buffer.isBuffer(body)) body = body.toString("utf8");
   if (typeof body === "string") {
     if (!body.trim()) {
       body = {};
@@ -47,11 +77,19 @@ module.exports = async function handler(req, res) {
       }
     }
   }
-  body = body || {};
+  if (!body || typeof body !== "object" || Array.isArray(body)) body = {};
 
   const text = String(body.text || "").trim().slice(0, 5000);
   if (!text) {
     res.status(400).json({ error: "Missing text in request body" });
+    return;
+  }
+
+  const requestedModel = body.model_id === undefined || body.model_id === null || body.model_id === ""
+    ? DEFAULT_MODEL_ID
+    : String(body.model_id);
+  if (!ALLOWED_MODEL_IDS.has(requestedModel)) {
+    res.status(400).json({ error: "Unsupported model_id" });
     return;
   }
 
@@ -85,8 +123,8 @@ module.exports = async function handler(req, res) {
         },
         body: JSON.stringify({
           text: text.replace(/THRiVE/g, "Thrive"),
-          model_id: body.model_id || "eleven_turbo_v2_5",
-          voice_settings: body.voice_settings || { stability: 0.5, similarity_boost: 0.75 }
+          model_id: requestedModel,
+          voice_settings: sanitizeVoiceSettings(body.voice_settings)
         })
       }
     );
@@ -105,3 +143,5 @@ module.exports = async function handler(req, res) {
     res.status(502).json({ fallback: true, reason: err?.name === "AbortError" ? "timeout" : "network_error" });
   }
 };
+
+module.exports.ALLOWED_MODEL_IDS = ALLOWED_MODEL_IDS;
