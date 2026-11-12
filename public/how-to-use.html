@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="storage-safe.js"></script>
     <title>Practitioner Guide &amp; IT Help Desk — THRiVE Coaching</title>
     <meta name="description" content="Complete practitioner guide to the 3-Tier Clinical Ecosystem (thrivecoaching.ai, LearnWorlds Squads, and Personos AI), Review Center homework walkthrough, DevTools modal bypass, IT Help Desk, and Common GAPS simulation lab.">
     <meta name="theme-color" content="#F7F4EB">
@@ -681,16 +681,29 @@
             .dap-fieldset, .dap-board, .dap-note-card { padding: 1rem; }
         }
         @media print {
-            header, footer, nav, .nav-backdrop, .mobile-drawer, .nav-menu,
-            .subpage-hero, .guide-section:not(#dap-gaps-simulator), .challenge-bottom-nav,
+            /* Clinical print stylesheet: practitioner guide + simulator output */
+            @page { margin: 0.5in; }
+            header, footer, nav, .nav-backdrop, .mobile-drawer, .nav-menu, .no-print,
+            .challenge-bottom-nav, .hero-ecosystem-badges, #it-help-desk form, .gap-category-cta,
             .dap-col-controls, .dap-actions, .dap-disclaimer, .dap-hint {
                 display: none !important;
             }
+            body, .subpage-body { background: #fff !important; color: #000 !important; }
+            .guide-section { margin-bottom: 1rem; }
+            .tier-card, .gap-category-card, .guide-step-box, .dap-board, .dap-note-card {
+                box-shadow: none !important; border: 1px solid #000 !important; background: #fff !important; break-inside: avoid;
+            }
+            .section-header-block h2, .tier-card h3 { break-after: avoid; }
+            .ecosystem-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+            main a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; word-break: break-all; }
             .dap-layout { display: block; }
             .dap-col-output { position: static; display: block; }
-            .dap-board, .dap-note-card { box-shadow: none; border: 1px solid #000; break-inside: avoid; margin-bottom: 1rem; background: #fff; }
+            .dap-board, .dap-note-card { margin-bottom: 1rem; }
             .dap-note { max-height: none; overflow: visible; border: none; background: #fff; }
-            .dap-sim .section-header-block p { display: none; }
+            /* "Print / Save PDF" inside the simulator prints only the board + DAP note */
+            body.printing-dap .guide-section:not(#dap-gaps-simulator),
+            body.printing-dap .subpage-hero,
+            body.printing-dap .dap-sim .section-header-block p { display: none !important; }
         }
     </style>
 </head>
@@ -1855,7 +1868,12 @@
                 });
                 $('dap-print-btn').addEventListener('click', function () {
                     renderNote();
-                    if (typeof window.print === 'function') window.print();
+                    document.body.classList.add('printing-dap');
+                    try {
+                        if (typeof window.print === 'function') window.print();
+                    } finally {
+                        document.body.classList.remove('printing-dap');
+                    }
                 });
                 window.addEventListener('thrive-dossier-updated', refreshDossierButton);
                 window.addEventListener('storage', refreshDossierButton);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="storage-safe.js"></script>
     <title>The Flow Survey — THRiVE Coaching</title>
     <meta name="description" content="Pinpoint what kind of friction is slowing you down and measure your current Flow Score across Agency, Actions, Support, and Tools.">
     <meta name="theme-color" content="#F7F4EB">
@@ -32,6 +32,8 @@
     <!-- ⚙️ DEVELOPER CONFIGURATION                 -->
     <!-- ========================================== -->
     <script>
+var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
         const REVOKED_API_KEYS = new Set([
             "AIzaSyDhByu-gVi8PNLtDdl41ETxOmu2JOEVt8A",
             "sk_d2fc2ac281afdb8a56178f44c8ebca76f21da62f7a256bf8"
@@ -40,7 +42,7 @@
             const k = String(rawKey || "").trim();
             if (!k || k.includes("VITE_") || k === "__SERVER_PROXY__" || REVOKED_API_KEYS.has(k)) {
                 if (storageKey && REVOKED_API_KEYS.has(k)) {
-                    try { localStorage.removeItem(storageKey); } catch (e) {}
+                    try { thriveLocal.removeItem(storageKey); } catch (e) {}
                 }
                 return "";
             }
@@ -58,7 +60,7 @@
 
         function getActiveGeminiKey() {
             try {
-                const saved = localStorage.getItem('thriveGeminiKey');
+                const saved = thriveLocal.getItem('thriveGeminiKey');
                 if (saved !== null) return sanitizeApiKey(saved, 'thriveGeminiKey');
             } catch (e) {}
             return apiKey || "";
@@ -66,7 +68,7 @@
 
         function getActiveElevenLabsKey() {
             try {
-                const saved = localStorage.getItem('thriveElevenLabsKey');
+                const saved = thriveLocal.getItem('thriveElevenLabsKey');
                 if (saved !== null) return sanitizeApiKey(saved, 'thriveElevenLabsKey');
             } catch (e) {}
             return elevenLabsApiKey || "";
@@ -74,7 +76,7 @@
 
         function getActiveElevenLabsVoiceId() {
             try {
-                const saved = localStorage.getItem('thriveElevenLabsVoiceId');
+                const saved = thriveLocal.getItem('thriveElevenLabsVoiceId');
                 if (saved !== null && saved.trim() !== "") return saved.trim();
             } catch (e) {}
             return elevenLabsVoiceId || "21m00Tcm4TlvDq8ikWAM";
@@ -859,6 +861,8 @@
     </footer>
 
     <script>
+var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
         function triggerThriveHaptic(durationOrPattern = 15) {
             try {
                 if (
@@ -930,15 +934,15 @@
             const voiceInput = document.getElementById('survey-elevenlabs-voice');
             try {
                 if (gemInput) {
-                    localStorage.setItem('thriveGeminiKey', gemInput.value.trim());
+                    thriveLocal.setItem('thriveGeminiKey', gemInput.value.trim());
                 }
                 if (elInput) {
-                    localStorage.setItem('thriveElevenLabsKey', elInput.value.trim());
+                    thriveLocal.setItem('thriveElevenLabsKey', elInput.value.trim());
                 }
                 if (voiceInput && voiceInput.value.trim()) {
-                    localStorage.setItem('thriveElevenLabsVoiceId', voiceInput.value.trim());
+                    thriveLocal.setItem('thriveElevenLabsVoiceId', voiceInput.value.trim());
                 } else {
-                    localStorage.removeItem('thriveElevenLabsVoiceId');
+                    thriveLocal.removeItem('thriveElevenLabsVoiceId');
                 }
             } catch (e) {}
             closeSurveySettingsModal();
@@ -2272,7 +2276,7 @@
                     scores: [...scores],
                     answered: [...answered]
                 };
-                localStorage.setItem(FLOW_SURVEY_STATE_KEY, JSON.stringify(payload));
+                thriveLocal.setItem(FLOW_SURVEY_STATE_KEY, JSON.stringify(payload));
             } catch (e) {}
         }
 
@@ -2337,7 +2341,7 @@
             const { metaphorValue, customMetaphor } = getSelectedMetaphorDetails();
             let hasStoredState = false;
             try {
-                hasStoredState = Boolean(localStorage.getItem(FLOW_SURVEY_STATE_KEY));
+                hasStoredState = Boolean(thriveLocal.getItem(FLOW_SURVEY_STATE_KEY));
             } catch (e) {}
             return (
                 hasStoredState ||
@@ -2370,7 +2374,7 @@
             currentStepNum = 0;
 
             try {
-                localStorage.removeItem(FLOW_SURVEY_STATE_KEY);
+                thriveLocal.removeItem(FLOW_SURVEY_STATE_KEY);
             } catch (e) {}
 
             const banner = document.getElementById('resume-survey-banner');
@@ -2409,14 +2413,14 @@
                 goToStep(0);
             }
             try {
-                localStorage.removeItem(FLOW_SURVEY_STATE_KEY);
+                thriveLocal.removeItem(FLOW_SURVEY_STATE_KEY);
             } catch (e) {}
             return true;
         }
 
         function loadFlowSurveyStateOnBoot() {
             try {
-                const raw = localStorage.getItem(FLOW_SURVEY_STATE_KEY);
+                const raw = thriveLocal.getItem(FLOW_SURVEY_STATE_KEY);
                 if (!raw) return;
                 const saved = JSON.parse(raw);
                 if (!saved || typeof saved !== 'object') return;
@@ -2452,9 +2456,9 @@
         function applyCaseSeedOnBoot() {
             try {
                 if (typeof sessionStorage === 'undefined') return;
-                const raw = sessionStorage.getItem('thrive_case_seed_v1');
+                const raw = thriveSession.getItem('thrive_case_seed_v1');
                 if (!raw) return;
-                sessionStorage.removeItem('thrive_case_seed_v1');
+                thriveSession.removeItem('thrive_case_seed_v1');
                 const seed = JSON.parse(raw);
                 if (!seed || typeof seed.text !== 'string' || seed.target !== 'survey') return;
                 if (typeof seed.ts === 'number' && Date.now() - seed.ts > 60 * 60 * 1000) return;

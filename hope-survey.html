@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="storage-safe.js"></script>
     <meta name="description" content="Take the 20-Dimension HoPE Index to map your Outer Physical Space (OPS), Inner Relational Space (IRS), and Contextual Layering on an interactive coaching dashboard.">
     <title>HoPE Index - SOL THRiVE</title>
     <meta name="theme-color" content="#F7F4EB">
@@ -277,6 +277,8 @@
     </script>
 
     <script>
+var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
 const { useState, useEffect, useRef } = window.React;
 function triggerThriveHaptic(durationOrPattern = 15) {
   try {
@@ -565,7 +567,7 @@ function sanitizeApiKey(rawKey, storageKey) {
   if (!k || k.includes("VITE_") || k === "__SERVER_PROXY__" || REVOKED_API_KEYS.has(k)) {
     if (storageKey && REVOKED_API_KEYS.has(k)) {
       try {
-        localStorage.removeItem(storageKey);
+        thriveLocal.removeItem(storageKey);
       } catch (e) {
       }
     }
@@ -582,7 +584,7 @@ const defaultElevenLabsKey = sanitizeApiKey(injectedElevenLabsKey);
 const defaultElevenLabsVoiceId = "4EfJOraSN0d4Lt6iDXwh";
 function getActiveGeminiKey() {
   try {
-    const saved = localStorage.getItem("thriveGeminiKey");
+    const saved = thriveLocal.getItem("thriveGeminiKey");
     if (saved !== null) return sanitizeApiKey(saved, "thriveGeminiKey");
   } catch (e) {
   }
@@ -590,7 +592,7 @@ function getActiveGeminiKey() {
 }
 function getActiveElevenLabsKey() {
   try {
-    const saved = localStorage.getItem("thriveElevenLabsKey");
+    const saved = thriveLocal.getItem("thriveElevenLabsKey");
     if (saved !== null) return sanitizeApiKey(saved, "thriveElevenLabsKey");
   } catch (e) {
   }
@@ -598,7 +600,7 @@ function getActiveElevenLabsKey() {
 }
 function getActiveElevenLabsVoiceId() {
   try {
-    const saved = localStorage.getItem("thriveElevenLabsVoiceId");
+    const saved = thriveLocal.getItem("thriveElevenLabsVoiceId");
     if (saved !== null && saved.trim() !== "") return saved.trim();
   } catch (e) {
   }
@@ -1957,12 +1959,12 @@ const AISettingsModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
   const handleSave = () => {
     try {
-      localStorage.setItem("thriveGeminiKey", (gemKey || "").trim());
-      localStorage.setItem("thriveElevenLabsKey", (elKey || "").trim());
+      thriveLocal.setItem("thriveGeminiKey", (gemKey || "").trim());
+      thriveLocal.setItem("thriveElevenLabsKey", (elKey || "").trim());
       if (voiceId && voiceId.trim()) {
-        localStorage.setItem("thriveElevenLabsVoiceId", voiceId.trim());
+        thriveLocal.setItem("thriveElevenLabsVoiceId", voiceId.trim());
       } else {
-        localStorage.removeItem("thriveElevenLabsVoiceId");
+        thriveLocal.removeItem("thriveElevenLabsVoiceId");
       }
     } catch (e) {
     }
@@ -1973,7 +1975,7 @@ const AISettingsModal = ({ isOpen, onClose }) => {
 const HOPE_SURVEY_STATE_KEY = "thrive_hope_survey_state_v1";
 function loadSavedHopeSurveyState() {
   try {
-    const raw = localStorage.getItem(HOPE_SURVEY_STATE_KEY);
+    const raw = thriveLocal.getItem(HOPE_SURVEY_STATE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return null;
@@ -2047,7 +2049,7 @@ const App = () => {
       if (!hasAnswers && !hasReflections && !hasSelection && !(hasHistory && (step === "results" || step === "dashboard"))) {
         return;
       }
-      localStorage.setItem(HOPE_SURVEY_STATE_KEY, JSON.stringify({
+      thriveLocal.setItem(HOPE_SURVEY_STATE_KEY, JSON.stringify({
         step,
         currentQIndex,
         answers,
@@ -2062,7 +2064,7 @@ const App = () => {
   const hasHopeProgressToConfirm = () => {
     let hasStored = false;
     try {
-      hasStored = Boolean(localStorage.getItem(HOPE_SURVEY_STATE_KEY));
+      hasStored = Boolean(thriveLocal.getItem(HOPE_SURVEY_STATE_KEY));
     } catch (e) {
     }
     const hasAnswers = Object.keys(answers || {}).length > 0;
@@ -2082,7 +2084,7 @@ const App = () => {
     }
     stopHopeAudio();
     try {
-      localStorage.removeItem(HOPE_SURVEY_STATE_KEY);
+      thriveLocal.removeItem(HOPE_SURVEY_STATE_KEY);
     } catch (e) {
     }
     pendingGuestHistoryRef.current = [];
@@ -2327,7 +2329,7 @@ const App = () => {
     }
     stopHopeAudio();
     try {
-      localStorage.removeItem(HOPE_SURVEY_STATE_KEY);
+      thriveLocal.removeItem(HOPE_SURVEY_STATE_KEY);
     } catch (e) {
     }
     setResumeNoticeVisible(false);
@@ -2345,7 +2347,7 @@ const App = () => {
     window.signOut(window.firebaseAuth).then(() => {
       pendingGuestHistoryRef.current = [];
       try {
-        localStorage.removeItem(HOPE_SURVEY_STATE_KEY);
+        thriveLocal.removeItem(HOPE_SURVEY_STATE_KEY);
       } catch (e) {
       }
       setResumeNoticeVisible(false);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="storage-safe.js"></script>
     <title>The THRiVE Report — THRiVE Coaching</title>
     <meta name="description" content="Uncover your unique strengths across Traits, Hobbies, Relationships, Interests, Values, and Experiences with the AI-powered THRiVE Report.">
     <meta name="theme-color" content="#F7F4EB">
@@ -220,6 +220,8 @@
     </div>
 </footer>
     <script>
+var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
 const { useState, useEffect, useRef } = React;
 function triggerThriveHaptic(durationOrPattern = 15) {
   try {
@@ -265,7 +267,7 @@ function sanitizeApiKey(rawKey, storageKey) {
   if (!k || k.includes("VITE_") || k === "__SERVER_PROXY__" || REVOKED_API_KEYS.has(k)) {
     if (storageKey && REVOKED_API_KEYS.has(k)) {
       try {
-        localStorage.removeItem(storageKey);
+        thriveLocal.removeItem(storageKey);
       } catch (e) {
       }
     }
@@ -633,7 +635,7 @@ function normalizeBulletOutput(aiText, originalText) {
 }
 function resolveGeminiKey() {
   try {
-    const saved = localStorage.getItem("thriveGeminiKey");
+    const saved = thriveLocal.getItem("thriveGeminiKey");
     if (saved !== null) return sanitizeApiKey(saved, "thriveGeminiKey");
   } catch (e) {
   }
@@ -641,7 +643,7 @@ function resolveGeminiKey() {
 }
 function resolveElevenLabsKey() {
   try {
-    const saved = localStorage.getItem("thriveElevenLabsKey");
+    const saved = thriveLocal.getItem("thriveElevenLabsKey");
     if (saved !== null) return sanitizeApiKey(saved, "thriveElevenLabsKey");
   } catch (e) {
   }
@@ -649,7 +651,7 @@ function resolveElevenLabsKey() {
 }
 function resolveElevenLabsVoiceId() {
   try {
-    const saved = localStorage.getItem("thriveElevenLabsVoiceId");
+    const saved = thriveLocal.getItem("thriveElevenLabsVoiceId");
     if (saved !== null && saved.trim() !== "") return saved.trim();
   } catch (e) {
   }
@@ -702,7 +704,7 @@ const CloseIcon = ({ className }) => /* @__PURE__ */ React.createElement("svg", 
 const PROFILE_STATE_STORAGE_KEY = "thrive_profile_state_v1";
 function readInitialProfileState() {
   try {
-    const raw = localStorage.getItem(PROFILE_STATE_STORAGE_KEY);
+    const raw = thriveLocal.getItem(PROFILE_STATE_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return null;
@@ -765,7 +767,7 @@ function App() {
     const str = val == null ? "" : String(val);
     setGeminiKeyState(str);
     try {
-      localStorage.setItem("thriveGeminiKey", str.trim());
+      thriveLocal.setItem("thriveGeminiKey", str.trim());
     } catch (e) {
     }
   };
@@ -773,7 +775,7 @@ function App() {
     const str = val == null ? "" : String(val);
     setElevenLabsKeyState(str);
     try {
-      localStorage.setItem("thriveElevenLabsKey", str.trim());
+      thriveLocal.setItem("thriveElevenLabsKey", str.trim());
     } catch (e) {
     }
   };
@@ -781,7 +783,7 @@ function App() {
     const str = val == null ? "" : String(val);
     setElevenLabsVoiceIdState(str);
     try {
-      localStorage.setItem("thriveElevenLabsVoiceId", str.trim());
+      thriveLocal.setItem("thriveElevenLabsVoiceId", str.trim());
     } catch (e) {
     }
   };
@@ -790,7 +792,7 @@ function App() {
     try {
       const hasAny = Boolean(details?.interviewee?.trim() || details?.interviewer?.trim() || details?.email?.trim()) || Object.keys(sections || {}).some((k) => sections[k] && String(sections[k]).trim()) || Object.keys(draftsObj || {}).some((k) => draftsObj[k] && String(draftsObj[k]).trim());
       if (!hasAny) return;
-      localStorage.setItem(PROFILE_STATE_STORAGE_KEY, JSON.stringify({
+      thriveLocal.setItem(PROFILE_STATE_STORAGE_KEY, JSON.stringify({
         step: stepVal,
         userDetails: details,
         reportData: sections,
@@ -824,7 +826,7 @@ function App() {
   const hasProfileProgressToConfirm = () => {
     let hasStored = false;
     try {
-      hasStored = Boolean(localStorage.getItem(PROFILE_STATE_STORAGE_KEY));
+      hasStored = Boolean(thriveLocal.getItem(PROFILE_STATE_STORAGE_KEY));
     } catch (e) {
     }
     const hasDetails = Boolean(
@@ -848,7 +850,7 @@ function App() {
     stopGlobalAudio();
     setResumeBanner(null);
     try {
-      localStorage.removeItem(PROFILE_STATE_STORAGE_KEY);
+      thriveLocal.removeItem(PROFILE_STATE_STORAGE_KEY);
     } catch (e) {
     }
     setUserDetails({ interviewee: "", interviewer: "", email: "" });

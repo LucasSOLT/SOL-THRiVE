@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="storage-safe.js"></script>
     <title>Session 0 Pre-Flight Onboarding Hub — THRiVE Coaching</title>
     <meta name="description" content="Session 0 Pre-Flight Onboarding Hub for the 5 to THRiVE Practitioner Lab. Calibrate workstation microphone dictation, practice the Safe-Save protocol, verify LMS squad placement, and access diagnostics.">
     <meta name="theme-color" content="#F7F4EB">
@@ -661,7 +661,20 @@
                 margin-top: 0.35rem;
             }
         }
-    </style>
+    
+        /* Clinical print stylesheet: print the pre-flight checklist as a one-page sign-off sheet */
+        @media print {
+            @page { margin: 0.5in; }
+            body, .subpage-body { background: #fff !important; color: #000 !important; }
+            #mic-tester-card, #safesave-trainer-card, #onboarding-directory-grid, #learnworlds-modal-guide,
+            #btn-reset-checklist, .btn-action-primary, .btn-action-secondary, .cohort-pill, .no-print { display: none !important; }
+            .hub-card { box-shadow: none !important; border: 1px solid #000 !important; background: #fff !important; break-inside: avoid; margin-bottom: 0.75rem; }
+            .checklist-item { break-inside: avoid; box-shadow: none !important; border: 1px solid #555 !important; background: #fff !important; }
+            .checklist-item-checkbox { appearance: auto; -webkit-appearance: checkbox; width: 1.1rem; height: 1.1rem; }
+            .checklist-item-desc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; word-break: break-all; }
+            .progress-bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+</style>
 </head>
 <body class="subpage-body onboarding-page">
     <header class="header">
@@ -1190,6 +1203,8 @@
     <!-- INLINE APPLICATION LOGIC FOR SESSION 0 PRE-FLIGHT HUB -->
     <script>
     (function initOnboardingHub() {
+        var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+        var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
         const STORAGE_KEY = 'thrive_onboarding_checklist_v1';
 
         const DEFAULT_CHECKLIST_STATE = {
@@ -1213,7 +1228,7 @@
         function safeReadJson(key) {
             try {
                 if (typeof window !== 'undefined' && window.localStorage) {
-                    const raw = localStorage.getItem(key);
+                    const raw = thriveLocal.getItem(key);
                     return raw ? JSON.parse(raw) : null;
                 }
             } catch (_) {}
@@ -1258,7 +1273,7 @@
             let autoUpdated = false;
             try {
                 if (typeof window !== 'undefined' && window.localStorage) {
-                    const raw = localStorage.getItem(STORAGE_KEY);
+                    const raw = thriveLocal.getItem(STORAGE_KEY);
                     if (raw) {
                         const parsed = JSON.parse(raw);
                         if (parsed && parsed.checklist && typeof parsed.checklist === 'object' && !Array.isArray(parsed.checklist)) {
@@ -1312,7 +1327,7 @@
             try {
                 if (typeof window !== 'undefined' && window.localStorage) {
                     const payload = Object.assign({}, state, { manualUnchecked });
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+                    thriveLocal.setItem(STORAGE_KEY, JSON.stringify(payload));
                 }
             } catch (err) {
                 console.warn('[Onboarding Hub] localStorage write failed:', err);

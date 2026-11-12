@@ -730,7 +730,7 @@ const initThriveUI = () => {
                 const card = link.closest('.scenario-card');
                 const quote = getScenarioQuote(card);
                 if (!quote || typeof sessionStorage === 'undefined') return;
-                sessionStorage.setItem('thrive_case_seed_v1', JSON.stringify({
+                (window.ThriveStorage ? window.ThriveStorage.session : sessionStorage).setItem('thrive_case_seed_v1', JSON.stringify({
                     text: quote.slice(0, 1200),
                     target: link.getAttribute('data-case-seed') || 'survey',
                     ts: Date.now()
@@ -1397,6 +1397,9 @@ const initThriveUI = () => {
 
     const safeGetStorageItem = (storageType, key) => {
         try {
+            if (typeof window !== 'undefined' && window.ThriveStorage && typeof window.ThriveStorage.get === 'function') {
+                return window.ThriveStorage.get(storageType === 'session' ? 'session' : 'local', key);
+            }
             if (storageType === 'session' && typeof sessionStorage !== 'undefined' && sessionStorage) {
                 return sessionStorage.getItem(key);
             }
@@ -1716,7 +1719,9 @@ const initThriveUI = () => {
             const current = readDossier();
             const next = typeof updater === 'function' ? updater(current) : { ...current, ...updater };
             next.updatedAt = new Date().toISOString();
-            if (typeof localStorage !== 'undefined' && localStorage) {
+            if (typeof window !== 'undefined' && window.ThriveStorage && typeof window.ThriveStorage.set === 'function') {
+                window.ThriveStorage.set('local', DOSSIER_KEY, JSON.stringify(next));
+            } else if (typeof localStorage !== 'undefined' && localStorage) {
                 localStorage.setItem(DOSSIER_KEY, JSON.stringify(next));
             }
             refreshStatusBadges();
@@ -2222,6 +2227,152 @@ const initThriveUI = () => {
         window.addEventListener('storage', refreshStatusBadges);
     }
 })();
+
+// =========================================================================
+// SESSION 0 DIAGNOSTIC PROGRESS BAR / TOOL SWITCHER
+// Shown on survey, profile, hope-survey and results: completion badges for the three
+// diagnostics (Flow Survey, THRiVE Report, HoPE Index) plus a link back to the Pre-Flight Hub.
+// Read-only: never writes to the frozen dossier / survey storage keys.
+// =========================================================================
+const initSession0Bar = () => {
+    try {
+        if (typeof document === 'undefined' || typeof window === 'undefined' || !document.querySelector) return;
+        if (document.querySelector('[data-session0-bar]')) return;
+        const file = String((window.location && window.location.pathname) || '').split('?')[0].split('#')[0].split('/').pop().replace(/\.html$/i, '').toLowerCase();
+        const PAGES = ['survey', 'profile', 'hope-survey', 'results'];
+        if (PAGES.indexOf(file) === -1) return;
+        const header = document.querySelector('header');
+        if (!header || !header.parentNode) return;
+
+        const TOOLS = [
+            { key: 'flow', href: 'survey.html', slug: 'survey', label: 'Flow Survey' },
+            { key: 'report', href: 'profile.html', slug: 'profile', label: 'THRiVE Report' },
+            { key: 'hope', href: 'hope-survey.html', slug: 'hope-survey', label: 'HoPE Index' }
+        ];
+
+        const readJSON = (key) => {
+            try {
+                let raw = null;
+                if (window.ThriveStorage && typeof window.ThriveStorage.get === 'function') raw = window.ThriveStorage.get('local', key);
+                else if (typeof localStorage !== 'undefined' && localStorage) raw = localStorage.getItem(key);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                return parsed && typeof parsed === 'object' ? parsed : null;
+            } catch (_) { return null; }
+        };
+
+        const hasAnyValue = (obj) => !!obj && typeof obj === 'object' && Object.keys(obj).some((k) => {
+            const v = obj[k];
+            if (v === null || v === undefined) return false;
+            if (typeof v === 'number') return Number.isFinite(v) && v > 0;
+            if (typeof v === 'object') return Object.keys(v).length > 0;
+            return String(v).trim().length > 0;
+        });
+
+        const computeStatuses = () => {
+            let summary = { hasFlow: false, hasProfile: false, hasHope: false };
+            try {
+                if (window.ThriveCoachingDossier && typeof window.ThriveCoachingDossier.getCompletionSummary === 'function') {
+                    summary = window.ThriveCoachingDossier.getCompletionSummary();
+                }
+            } catch (_) {}
+            const flow = readJSON('thrive_flow_survey_state_v1');
+            const profile = readJSON('thrive_profile_state_v1');
+            const hope = readJSON('thrive_hope_survey_state_v1');
+            const flowStarted = !!flow && ((Array.isArray(flow.answered) && flow.answered.some(Boolean)) || String(flow.problemDescription || '').trim().length > 0 || !!flow.metaphorValue);
+            const profileStarted = !!profile && (hasAnyValue(profile.reportData) || hasAnyValue(profile.userDetails));
+            const hopeStarted = !!hope && (hasAnyValue(hope.answers) || (Array.isArray(hope.surveyHistory) && hope.surveyHistory.length > 0));
+            return {
+                flow: summary.hasFlow ? 'complete' : (flowStarted ? 'progress' : 'todo'),
+                report: summary.hasProfile ? 'complete' : (profileStarted ? 'progress' : 'todo'),
+                hope: summary.hasHope ? 'complete' : (hopeStarted ? 'progress' : 'todo')
+            };
+        };
+
+        const STATUS_TEXT = { complete: 'Complete', progress: 'In progress', todo: 'Not started' };
+        const STATUS_ICON = { complete: '\u2713', progress: '\u2026', todo: '\u25CB' };
+
+        const bar = document.createElement('nav');
+        bar.className = 'session0-bar no-print';
+        bar.setAttribute('data-session0-bar', 'true');
+        bar.setAttribute('aria-label', 'Session 0 diagnostic progress');
+
+        const hub = document.createElement('a');
+        hub.className = 'session0-hub-link';
+        hub.href = 'onboarding.html';
+        hub.textContent = '\u2190 Session 0 Pre-Flight Hub';
+        bar.appendChild(hub);
+
+        const list = document.createElement('ol');
+        list.className = 'session0-steps';
+        const items = {};
+        TOOLS.forEach((tool) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'session0-step';
+            a.href = tool.href;
+            a.setAttribute('data-s0-tool', tool.key);
+            if (tool.slug === file) a.setAttribute('aria-current', 'page');
+            const icon = document.createElement('span');
+            icon.className = 's0-badge';
+            icon.setAttribute('aria-hidden', 'true');
+            const name = document.createElement('span');
+            name.className = 's0-name';
+            name.textContent = tool.label;
+            const status = document.createElement('span');
+            status.className = 's0-status';
+            a.appendChild(icon);
+            a.appendChild(name);
+            a.appendChild(status);
+            li.appendChild(a);
+            list.appendChild(li);
+            items[tool.key] = { a, icon, status, tool };
+        });
+        bar.appendChild(list);
+
+        const count = document.createElement('span');
+        count.className = 'session0-count';
+        count.setAttribute('role', 'status');
+        count.setAttribute('aria-live', 'polite');
+        bar.appendChild(count);
+
+        const render = () => {
+            const st = computeStatuses();
+            let done = 0;
+            TOOLS.forEach((tool) => {
+                const s = st[tool.key];
+                const it = items[tool.key];
+                if (s === 'complete') done++;
+                it.a.setAttribute('data-status', s);
+                it.icon.textContent = STATUS_ICON[s];
+                it.status.textContent = STATUS_TEXT[s];
+                it.a.setAttribute('aria-label', tool.label + ': ' + STATUS_TEXT[s] + (tool.slug === file ? ' (current page)' : ''));
+            });
+            count.textContent = done + ' of 3 complete';
+            bar.setAttribute('data-complete-count', String(done));
+            count.setAttribute('aria-label', done + ' of 3 diagnostics complete');
+        };
+
+        header.parentNode.insertBefore(bar, header.nextSibling);
+        render();
+
+        window.addEventListener('thrive-dossier-updated', render);
+        window.addEventListener('storage', render);
+        window.addEventListener('pageshow', render);
+        window.addEventListener('focus', render);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+        setInterval(() => { if (!document.hidden) render(); }, 4000);
+        window.ThriveSession0Bar = { refresh: render, getStatuses: computeStatuses };
+    } catch (_) {
+        // progressive enhancement only
+    }
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSession0Bar);
+} else {
+    initSession0Bar();
+}
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initThriveUI);

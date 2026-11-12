@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1"><script src="storage-safe.js"></script>
 <title>5 to THRiVE Practitioner Lab | Clinical Practice Audit &amp; Enrollment</title>
 <meta name="description" content="Take the 3-question Clinical Practice Audit, see practitioner consensus, cast your squad vote, and enroll in the 5 to THRiVE Practitioner Lab ($297 tuition, 21-seat cap).">
 <meta name="theme-color" content="#F7F4EB">
@@ -381,6 +381,8 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
 </main>
 
 <script>
+var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
 (function(){
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
   const state={ratings:[null,null,null],lead:{},vote:null,date:null,time:null};
@@ -423,11 +425,11 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
     try{
       const ts=new Date().toISOString(),L=state.lead||{};
       const payload=Object.assign({first:L.fn||'',last:L.ln||'',email:L.em||'',phone:L.ph||'',organization:L.org||'',fn:L.fn||'',ln:L.ln||'',em:L.em||'',ph:L.ph||'',org:L.org||'',ratings:state.ratings,completedAt:ts},extra||{});
-      if(typeof sessionStorage!=='undefined'&&sessionStorage)sessionStorage.setItem('solThrive',JSON.stringify(payload));
+      if(typeof sessionStorage!=='undefined'&&sessionStorage)thriveSession.setItem('solThrive',JSON.stringify(payload));
       if(typeof localStorage!=='undefined'&&localStorage){
-        localStorage.setItem('solThrive',JSON.stringify(payload));
-        if(L.fn)localStorage.setItem('solThriveLead',JSON.stringify(payload));
-        if(payload.priorities&&payload.priorities.length)localStorage.setItem('solThriveVotes',JSON.stringify(payload));
+        thriveLocal.setItem('solThrive',JSON.stringify(payload));
+        if(L.fn)thriveLocal.setItem('solThriveLead',JSON.stringify(payload));
+        if(payload.priorities&&payload.priorities.length)thriveLocal.setItem('solThriveVotes',JSON.stringify(payload));
       }
     }catch(e){}
   }

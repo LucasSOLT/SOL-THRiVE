@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1"><script src="storage-safe.js"></script>
 <title>SOL THRiVE – Your Practice Readiness &amp; Community Blueprint Results</title>
 <meta name="description" content="See how your Clinical Practice Audit compares with verified community practitioners and vote on the SOL THRiVE Community Blueprint priorities.">
 <meta name="theme-color" content="#F7F4EB">
@@ -191,6 +191,72 @@ h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spaci
   .fill[data-w="94"]{width:94% !important}
   .fill[data-w="89"]{width:89% !important}
 }
+/* ---- Session 0 diagnostic progress bar / tool switcher ---- */
+.session0-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+    max-width: 1200px;
+    margin: 0.75rem auto;
+    padding: 0.6rem 1rem;
+    background: #F0F9FF;
+    border: 2px solid #BFDBFE;
+    border-radius: 14px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.9rem;
+    color: #1E293B;
+    position: relative;
+    z-index: 5;
+}
+.session0-bar a { text-decoration: none; }
+.session0-hub-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    border: 2px solid #1E3A8A;
+    background: #fff;
+    color: #1E3A8A;
+    font-weight: 800;
+}
+.session0-steps { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; flex: 0 1 auto; }
+.session0-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0 0.7rem;
+    border-radius: 999px;
+    border: 2px solid #CBD5E1;
+    background: #fff;
+    color: #1E293B;
+    font-weight: 700;
+}
+.session0-step .s0-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.4rem; height: 1.4rem; border-radius: 50%;
+    background: #E2E8F0; color: #334155; font-size: 0.8rem; font-weight: 800;
+}
+.session0-step .s0-status { font-size: 0.75rem; font-weight: 700; color: #475569; }
+.session0-step[data-status="complete"] { border-color: #059669; background: #ECFDF5; }
+.session0-step[data-status="complete"] .s0-badge { background: #059669; color: #fff; }
+.session0-step[data-status="complete"] .s0-status { color: #047857; }
+.session0-step[data-status="progress"] { border-color: #D97706; background: #FFFBEB; }
+.session0-step[data-status="progress"] .s0-badge { background: #D97706; color: #fff; }
+.session0-step[data-status="progress"] .s0-status { color: #92400E; }
+.session0-step[aria-current="page"] { box-shadow: 0 0 0 3px #0478fe; }
+.session0-count { font-weight: 800; color: #1E3A8A; margin-left: auto; }
+@media (max-width: 640px) {
+    .session0-bar { margin: 0.5rem 0.75rem; padding: 0.6rem; }
+    .session0-hub-link { width: 100%; justify-content: center; }
+    .session0-steps { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .session0-step { flex-direction: column; justify-content: center; gap: 0.1rem; padding: 0.4rem 0.3rem; text-align: center; border-radius: 12px; min-height: 64px; }
+    .session0-step .s0-name { font-size: 0.8rem; line-height: 1.15; }
+    .session0-count { margin-left: 0; width: 100%; text-align: center; }
+}
+@media print{.session0-bar{display:none !important}}
 </style>
 <script src="script.js" defer></script>
 </head>
@@ -287,10 +353,12 @@ h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spaci
 </div>
 
 <script>
+var thriveLocal = (typeof ThriveStorage !== 'undefined' && ThriveStorage.local) || (typeof localStorage !== 'undefined' ? localStorage : null);
+var thriveSession = (typeof ThriveStorage !== 'undefined' && ThriveStorage.session) || (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
 const FIRESTORE_PROJECT_ID = "sol-thrive";
 function isFirestoreSyncEnabled(){
   try {
-    return Boolean(window.SOL_ENABLE_FIRESTORE_SYNC || localStorage.getItem('solEnableFirestoreSync') === 'true');
+    return Boolean(window.SOL_ENABLE_FIRESTORE_SYNC || thriveLocal.getItem('solEnableFirestoreSync') === 'true');
   } catch (_) {
     return false;
   }
@@ -300,9 +368,9 @@ function isFirestoreSyncEnabled(){
 let d = {};
 try {
   d = JSON.parse(
-    sessionStorage.getItem('solThrive') ||
-    localStorage.getItem('solThriveLead') ||
-    localStorage.getItem('solThrive') ||
+    thriveSession.getItem('solThrive') ||
+    thriveLocal.getItem('solThriveLead') ||
+    thriveLocal.getItem('solThrive') ||
     '{}'
   );
 } catch (e) {}
@@ -496,7 +564,7 @@ async function saveVoteToFirestore(votePayload){
 
 // Restore saved votes if previously submitted
 try {
-  const savedVoteData = JSON.parse(localStorage.getItem('solThriveVotes') || 'null');
+  const savedVoteData = JSON.parse(thriveLocal.getItem('solThriveVotes') || 'null');
   if (savedVoteData && Array.isArray(savedVoteData.priorities) && savedVoteData.priorities.length > 0) {
     const savedSet = new Set(savedVoteData.priorities);
     document.querySelectorAll('.opt').forEach(opt => {
@@ -546,12 +614,12 @@ document.getElementById('vote').onclick = function(){
   };
 
   try {
-    localStorage.setItem('solThriveVotes', JSON.stringify(votePayload));
+    thriveLocal.setItem('solThriveVotes', JSON.stringify(votePayload));
     const merged = { ...d, votes: priorities, votedAt: votePayload.timestamp };
-    localStorage.setItem('solThrive', JSON.stringify(merged));
-    sessionStorage.setItem('solThrive', JSON.stringify(merged));
+    thriveLocal.setItem('solThrive', JSON.stringify(merged));
+    thriveSession.setItem('solThrive', JSON.stringify(merged));
     if (d && d.first) {
-      localStorage.setItem('solThriveLead', JSON.stringify(merged));
+      thriveLocal.setItem('solThriveLead', JSON.stringify(merged));
     }
   } catch (_) {}
 
@@ -813,7 +881,7 @@ function getCurrentAuditSnapshot(){
   let fallbackPriorities = selectedPriorities;
   if (!fallbackPriorities.length) {
     try {
-      const savedVotes = JSON.parse(localStorage.getItem('solThriveVotes') || 'null');
+      const savedVotes = JSON.parse(thriveLocal.getItem('solThriveVotes') || 'null');
       if (savedVotes && Array.isArray(savedVotes.priorities)) fallbackPriorities = savedVotes.priorities;
     } catch (_) {}
   }
@@ -831,7 +899,7 @@ function getCurrentAuditSnapshot(){
 function buildStandaloneClinicalDossier(){
   const snap = getCurrentAuditSnapshot();
   const safeParse = (k) => {
-    try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (_) { return null; }
+    try { return JSON.parse(thriveLocal.getItem(k) || 'null'); } catch (_) { return null; }
   };
   const cached = safeParse('thrive_coaching_dossier_v1') || {};
   const flowRaw = safeParse('thrive_flow_survey_state_v1');
