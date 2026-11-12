@@ -41,7 +41,149 @@ var fireThriveHaptic = function (durationOrPattern = 15) {
     }
 };
 
+/* ==========================================================================
+   THRIVE_ECOSYSTEM_CONFIG — single source of truth for the Practitioner Lab ecosystem.
+   Edit ONE line here and every link / video slot across the website updates:
+     • Empty ('') LearnWorlds URLs fall back to the school URL (course -> school, Squad/Review -> course -> school).
+     • Empty Personos URL keeps any [data-lw-optional] link hidden.
+     • Empty YouTube IDs keep the built-in fallback HTML / <video> players.
+   Markup hooks:  data-lw-link="school|login|course|squadA|squadB|squadC|reviewCenter|personos"
+                  data-video-slot="steak|sizzle30|sizzle60|sizzle90"
+   ========================================================================== */
+var THRIVE_ECOSYSTEM_CONFIG = {
+    learnworlds: {
+        school: 'https://thrive-coaching.learnworlds.com',
+        login: 'https://thrive-coaching.learnworlds.com',
+        course: '',        // e.g. 'https://thrive-coaching.learnworlds.com/course/5-to-thrive-practitioner-lab'
+        squadA: '',        // Squad A community space (Seats 1–7)
+        squadB: '',        // Squad B community space (Seats 8–14)
+        squadC: '',        // Squad C community space (Seats 15–21)
+        reviewCenter: ''   // Review Center homework submissions
+    },
+    personos: {
+        portal: ''         // Personos AI client portal URL (leave '' until the final URL is provided)
+    },
+    video: {
+        steakVideoYoutubeId: '',  // Steve's primary "Steak" video (11-char YouTube ID)
+        sizzle30YoutubeId: '',    // 0:30 sizzle reel
+        sizzle60YoutubeId: '',    // 1:00 sizzle reel
+        sizzle90YoutubeId: ''     // 1:30 sizzle reel
+    }
+};
+
+if (typeof window !== 'undefined') {
+    window.THRIVE_ECOSYSTEM_CONFIG = THRIVE_ECOSYSTEM_CONFIG;
+}
+
+var THRIVE_VIDEO_SLOT_KEYS = {
+    steak: 'steakVideoYoutubeId',
+    sizzle30: 'sizzle30YoutubeId',
+    sizzle60: 'sizzle60YoutubeId',
+    sizzle90: 'sizzle90YoutubeId'
+};
+
+var normalizeThriveHttpsUrl = function (raw) {
+    const value = String(raw || '').trim();
+    if (!value) return '';
+    try {
+        const u = new URL(value);
+        return u.protocol === 'https:' ? u.toString().replace(/\/$/, u.pathname === '/' && !u.search && !u.hash ? '' : '/') : '';
+    } catch (_) {
+        return '';
+    }
+};
+
+var resolveThriveEcosystemLink = function (key, cfg) {
+    const config = cfg || THRIVE_ECOSYSTEM_CONFIG;
+    const lw = (config && config.learnworlds) || {};
+    const pick = (...names) => {
+        for (const n of names) {
+            const url = normalizeThriveHttpsUrl(lw[n]);
+            if (url) return url;
+        }
+        return '';
+    };
+    switch (key) {
+        case 'school': return pick('school');
+        case 'login': return pick('login', 'school');
+        case 'course': return pick('course', 'school');
+        case 'squadA': return pick('squadA', 'course', 'school');
+        case 'squadB': return pick('squadB', 'course', 'school');
+        case 'squadC': return pick('squadC', 'course', 'school');
+        case 'reviewCenter': return pick('reviewCenter', 'course', 'school');
+        case 'personos': return normalizeThriveHttpsUrl(config && config.personos && config.personos.portal);
+        default: return '';
+    }
+};
+
+var extractThriveYoutubeId = function (raw) {
+    const value = String(raw || '').trim();
+    if (!value) return '';
+    if (/^[A-Za-z0-9_-]{11}$/.test(value)) return value;
+    const m = value.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : '';
+};
+
+var applyThriveEcosystemConfig = function (root, cfg) {
+    if (typeof document === 'undefined') return { links: 0, videos: 0 };
+    const scope = root || document;
+    const config = cfg || THRIVE_ECOSYSTEM_CONFIG;
+    let linkCount = 0;
+    let videoCount = 0;
+
+    scope.querySelectorAll('[data-lw-link]').forEach((el) => {
+        const key = el.getAttribute('data-lw-link');
+        const url = resolveThriveEcosystemLink(key, config);
+        if (url) {
+            if (el.tagName === 'A') {
+                el.setAttribute('href', url);
+                el.setAttribute('target', '_blank');
+                el.setAttribute('rel', 'noopener noreferrer');
+            }
+            el.removeAttribute('hidden');
+            linkCount++;
+        } else if (el.hasAttribute('data-lw-optional')) {
+            el.setAttribute('hidden', '');
+        }
+    });
+
+    scope.querySelectorAll('[data-video-slot]').forEach((slot) => {
+        const slotKey = slot.getAttribute('data-video-slot');
+        const configKey = THRIVE_VIDEO_SLOT_KEYS[slotKey];
+        const id = configKey ? extractThriveYoutubeId(config && config.video && config.video[configKey]) : '';
+        const existing = slot.querySelector(':scope > iframe.video-slot-iframe');
+        if (!id) {
+            // Unset (or cleared): restore the fallback HTML / video player.
+            if (existing) existing.remove();
+            slot.classList.remove('has-embed');
+            return;
+        }
+        if (existing && existing.getAttribute('data-yt-id') === id) { videoCount++; return; }
+        if (existing) existing.remove();
+        const frame = document.createElement('iframe');
+        frame.className = 'video-slot-iframe';
+        frame.setAttribute('data-yt-id', id);
+        frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?rel=0&modestbranding=1&playsinline=1';
+        frame.title = slot.getAttribute('data-video-title') || 'THRiVE Practitioner Lab video';
+        frame.setAttribute('loading', 'lazy');
+        frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
+        frame.setAttribute('allowfullscreen', '');
+        frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        slot.appendChild(frame);
+        slot.classList.add('has-embed');
+        videoCount++;
+    });
+
+    return { links: linkCount, videos: videoCount };
+};
+
+if (typeof window !== 'undefined') {
+    window.applyThriveEcosystemConfig = applyThriveEcosystemConfig;
+    window.resolveThriveEcosystemLink = resolveThriveEcosystemLink;
+}
+
 const initThriveUI = () => {
+    try { applyThriveEcosystemConfig(); } catch (_) { /* progressive enhancement only */ }
     // Hamburger Menu Logic
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -89,7 +231,7 @@ const initThriveUI = () => {
 
         // Release the scroll lock if the viewport grows into desktop layout or the page is restored from bfcache.
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024 && navMenu.classList.contains('open')) setDrawerOpen(false, false);
+            if (window.innerWidth >= 1360 && navMenu.classList.contains('open')) setDrawerOpen(false, false);
         });
         window.addEventListener('pageshow', () => {
             if (navMenu.classList.contains('open')) setDrawerOpen(false, false);
