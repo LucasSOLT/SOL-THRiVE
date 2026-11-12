@@ -526,6 +526,172 @@
                 padding: 1.5rem;
             }
         }
+
+        /* ---- DAP Note & G.A.P.S. Action Board Simulator ---- */
+        .dap-sim .dap-disclaimer {
+            background: #FEF3C7;
+            border: 2px solid #D97706;
+            color: #78350F;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .dap-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .dap-col { min-width: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+        .dap-col-output { position: sticky; top: 1rem; }
+        .dap-fieldset {
+            border: 2px solid var(--ink-border, #1E2430);
+            border-radius: 18px;
+            background: #FFFFFF;
+            padding: 1.25rem;
+            margin: 0;
+            min-width: 0;
+            box-shadow: 4px 4px 0 var(--ink-border, #1E2430);
+        }
+        .dap-fieldset legend {
+            font-weight: 800;
+            padding: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .dap-step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            background: #0478fe;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+        .dap-limit {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #374151;
+            background: #F3F4F6;
+            border-radius: 999px;
+            padding: 0.15rem 0.6rem;
+        }
+        .dap-preset-grid, .dap-lens-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .dap-preset-btn, .dap-lens-btn {
+            text-align: left;
+            font: inherit;
+            border: 2px solid #CBD5E1;
+            background: #F8FAFC;
+            color: var(--text-color, #141824);
+            border-radius: 12px;
+            padding: 0.75rem 0.9rem;
+            min-height: 44px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .dap-preset-btn span { font-size: 0.85rem; color: #374151; }
+        .dap-lens-btn { font-weight: 700; justify-content: center; }
+        .dap-preset-btn:hover, .dap-lens-btn:hover { border-color: #0478fe; }
+        .dap-preset-btn[aria-checked="true"], .dap-lens-btn[aria-checked="true"] {
+            border-color: #0478fe;
+            background: #EBF5FF;
+            box-shadow: inset 0 0 0 1px #0478fe;
+        }
+        .dap-preset-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+        .dap-label { display: block; font-weight: 700; margin-bottom: 0.35rem; }
+        .dap-select {
+            width: 100%;
+            min-height: 44px;
+            font: inherit;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid #CBD5E1;
+            border-radius: 10px;
+            background: #fff;
+        }
+        .dap-steps { list-style: none; margin: 0.5rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+        .dap-step {
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 0.75rem 0.9rem;
+            background: #fff;
+        }
+        .dap-step.is-selected { border-color: #059669; background: #ECFDF5; }
+        .dap-step label { display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; min-height: 44px; }
+        .dap-step input[type="checkbox"] { width: 1.4rem; height: 1.4rem; margin-top: 0.15rem; flex: 0 0 auto; accent-color: #059669; }
+        .dap-step-title { display: block; font-weight: 800; }
+        .dap-step-text { display: block; margin-top: 0.15rem; }
+        .dap-step-lens { display: block; margin-top: 0.35rem; font-size: 0.9rem; color: #374151; font-style: italic; }
+        .dap-hint { font-size: 0.9rem; color: #374151; min-height: 1.25rem; margin: 0.5rem 0 0; }
+        .dap-board, .dap-note-card {
+            border: 2px solid var(--ink-border, #1E2430);
+            border-radius: 18px;
+            background: #FFFFFF;
+            padding: 1.25rem;
+            box-shadow: 4px 4px 0 var(--ink-border, #1E2430);
+            min-width: 0;
+        }
+        .dap-board { background: #F0F9FF; }
+        .dap-board-head { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+        .dap-board-head h3 { margin: 0; font-size: 1.15rem; }
+        .dap-board-meter, .dap-note-date { font-size: 0.85rem; font-weight: 700; color: #1E3A8A; background: #DBEAFE; border-radius: 999px; padding: 0.2rem 0.7rem; }
+        .dap-note-date { color: #374151; background: #F3F4F6; }
+        .dap-board-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+        .dap-board-item { background: #fff; border: 2px solid #BFDBFE; border-radius: 12px; padding: 0.6rem 0.8rem; }
+        .dap-board-item label { display: flex; gap: 0.7rem; align-items: flex-start; cursor: pointer; min-height: 44px; }
+        .dap-board-item input { width: 1.4rem; height: 1.4rem; margin-top: 0.15rem; flex: 0 0 auto; accent-color: #0478fe; }
+        .dap-board-item.is-done { background: #ECFDF5; border-color: #6EE7B7; }
+        .dap-board-item.is-done .dap-board-title { text-decoration: line-through; }
+        .dap-board-window { display: block; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #1D4ED8; }
+        .dap-board-title { display: block; font-weight: 700; }
+        .dap-board-empty { color: #374151; margin: 0.25rem 0 0; }
+        .dap-note {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            background: #F8FAFC;
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+            padding: 1rem;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            max-height: 28rem;
+            overflow: auto;
+        }
+        .dap-actions .btn-action-primary, .dap-actions .btn-action-secondary { min-height: 44px; }
+        .dap-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.9rem; }
+        @media (max-width: 960px) {
+            .dap-layout { grid-template-columns: minmax(0, 1fr); }
+            .dap-col-output { position: static; }
+        }
+        @media (max-width: 480px) {
+            .dap-preset-grid, .dap-lens-grid { grid-template-columns: minmax(0, 1fr); }
+            .dap-fieldset, .dap-board, .dap-note-card { padding: 1rem; }
+        }
+        @media print {
+            header, footer, nav, .nav-backdrop, .mobile-drawer, .nav-menu,
+            .subpage-hero, .guide-section:not(#dap-gaps-simulator), .challenge-bottom-nav,
+            .dap-col-controls, .dap-actions, .dap-disclaimer, .dap-hint {
+                display: none !important;
+            }
+            .dap-layout { display: block; }
+            .dap-col-output { position: static; display: block; }
+            .dap-board, .dap-note-card { box-shadow: none; border: 1px solid #000; break-inside: avoid; margin-bottom: 1rem; background: #fff; }
+            .dap-note { max-height: none; overflow: visible; border: none; background: #fff; }
+            .dap-sim .section-header-block p { display: none; }
+        }
     </style>
 </head>
 <body class="subpage-body">
@@ -929,6 +1095,96 @@
                 </div>
             </section>
 
+            <!-- SECTION 5: CLINICAL DAP NOTE & G.A.P.S. ACTION BOARD SIMULATOR -->
+            <section id="dap-gaps-simulator" class="guide-section dap-sim" aria-labelledby="dap-sim-title">
+                <div class="section-header-block">
+                    <span class="section-eyebrow">Clinical Simulator • Between-Session Practice</span>
+                    <h2 id="dap-sim-title">DAP Note &amp; G.A.P.S. Action Board Simulator</h2>
+                    <p class="section-lead">Rehearse the full loop in under five minutes: load a client profile, choose a coaching lens, pick one to three micro-actions for the 167 hours between sessions, and watch a documentation-ready DAP note write itself.</p>
+                </div>
+
+                <p class="dap-disclaimer" role="note"><strong>Training simulation only.</strong> The presets below are fictional composite clients. Do not type real client names or protected health information into this tool; nothing here is sent to a server.</p>
+
+                <div class="dap-layout">
+                    <div class="dap-col dap-col-controls">
+                        <!-- Step 1: client source -->
+                        <fieldset class="dap-fieldset">
+                            <legend><span class="dap-step-num">1</span> Load a client profile</legend>
+                            <div class="dap-preset-grid" role="radiogroup" aria-label="Client profile source" id="dap-preset-group">
+                                <button type="button" class="dap-preset-btn" role="radio" aria-checked="false" data-dap-source="dossier" id="dap-source-dossier">
+                                    <strong>My cached dossier</strong>
+                                    <span id="dap-dossier-hint">Uses your saved Flow Survey, THRiVE Report and HoPE Index</span>
+                                </button>
+                                <button type="button" class="dap-preset-btn" role="radio" aria-checked="true" data-dap-source="marcus">
+                                    <strong>Marcus, 34</strong>
+                                    <span>Addiction Recovery • 3 weeks sober, same trigger corner</span>
+                                </button>
+                                <button type="button" class="dap-preset-btn" role="radio" aria-checked="false" data-dap-source="dana">
+                                    <strong>Dana, 41</strong>
+                                    <span>Workforce Development • 14 months out of work</span>
+                                </button>
+                                <button type="button" class="dap-preset-btn" role="radio" aria-checked="false" data-dap-source="jordan">
+                                    <strong>Jordan, 27</strong>
+                                    <span>Interpersonal Conflict • roommate standoff, rent due</span>
+                                </button>
+                            </div>
+                            <label class="dap-label" for="dap-domain">Clinical domain</label>
+                            <select id="dap-domain" class="dap-select">
+                                <option value="addiction">Addiction Recovery</option>
+                                <option value="housing">Housing Stability</option>
+                                <option value="workforce">Workforce Development</option>
+                                <option value="distress">Emotional Distress</option>
+                                <option value="conflict">Interpersonal Conflict</option>
+                            </select>
+                        </fieldset>
+
+                        <!-- Step 2: lens -->
+                        <fieldset class="dap-fieldset">
+                            <legend><span class="dap-step-num">2</span> Choose a coaching lens</legend>
+                            <div class="dap-lens-grid" role="radiogroup" aria-label="Coaching lens" id="dap-lens-group">
+                                <button type="button" class="dap-lens-btn" role="radio" aria-checked="true" data-dap-lens="stoic">Stoic / Philosophical</button>
+                                <button type="button" class="dap-lens-btn" role="radio" aria-checked="false" data-dap-lens="faith">Faith / Spiritual</button>
+                                <button type="button" class="dap-lens-btn" role="radio" aria-checked="false" data-dap-lens="strengths">Strengths-First Behavioral</button>
+                                <button type="button" class="dap-lens-btn" role="radio" aria-checked="false" data-dap-lens="executive">Executive / Pragmatic</button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Step 3: G.A.P.S. steps -->
+                        <fieldset class="dap-fieldset">
+                            <legend><span class="dap-step-num">3</span> Pick 1–3 micro-actions <span class="dap-limit" id="dap-limit-count" aria-live="polite">0 of 3 selected</span></legend>
+                            <ol class="dap-steps" id="dap-steps" aria-label="Five tailored G.A.P.S. next steps"></ol>
+                            <p class="dap-hint" id="dap-limit-msg" role="status" aria-live="polite"></p>
+                        </fieldset>
+                    </div>
+
+                    <div class="dap-col dap-col-output">
+                        <!-- 167-Hour Action Board -->
+                        <div class="dap-board" aria-labelledby="dap-board-title">
+                            <div class="dap-board-head">
+                                <h3 id="dap-board-title">167-Hour Action Board</h3>
+                                <span class="dap-board-meter" id="dap-board-meter">0 of 0 done</span>
+                            </div>
+                            <ul class="dap-board-list" id="dap-board-list" aria-live="polite"></ul>
+                            <p class="dap-board-empty" id="dap-board-empty">No micro-actions yet. Tick one to three steps on the left to place them on the board.</p>
+                        </div>
+
+                        <!-- DAP Note -->
+                        <div class="dap-note-card" aria-labelledby="dap-note-title">
+                            <div class="dap-board-head">
+                                <h3 id="dap-note-title">Auto-Generated DAP Note</h3>
+                                <span class="dap-note-date" id="dap-note-date"></span>
+                            </div>
+                            <div class="dap-note" id="dap-note" tabindex="0" aria-label="Generated DAP note"></div>
+                            <div class="dap-actions">
+                                <button type="button" class="btn-action-primary" id="dap-copy-btn">&#128203; Copy DAP Note</button>
+                                <button type="button" class="btn-action-secondary" id="dap-print-btn">&#128424; Print / Save PDF</button>
+                            </div>
+                            <p class="dap-hint" id="dap-copy-status" role="status" aria-live="polite"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Bottom Navigation / Dossier CTA -->
             <section class="challenge-bottom-nav" aria-label="Additional Tools">
                 <span class="section-eyebrow">Export Clinical Data</span>
@@ -1138,6 +1394,482 @@
                     submitHelpDeskTicket: submitHelpDeskTicket
                 };
             }
+        })();
+    </script>
+    <script>
+        /* DAP Note & G.A.P.S. Action Board Simulator (training simulation; no network, no persistence) */
+        (function () {
+            'use strict';
+
+            var MAX_PICKS = 3;
+            var DOMAINS = {
+                addiction: {
+                    label: 'Addiction Recovery',
+                    friction: 'Cue-driven cravings in a predictable window, with recovery supports not yet woven into the daily routine.',
+                    steps: [
+                        ['Name the trigger window', 'Write down the two-hour window when cravings peak most days and the one person or place attached to it.'],
+                        ['Pre-load a 10-minute interrupt', 'Pick one ten-minute action (walk, call, cold water, meeting) to run before deciding anything during a craving.'],
+                        ['Book one recovery touchpoint', 'Put a meeting, sponsor call, or peer-support check-in on the calendar at a fixed time this week.'],
+                        ['Remove one cue from the environment', 'Delete one contact, avoid one location, or change one route that cues use.'],
+                        ['Log one win nightly', 'Record one thing handled without using, in one sentence, before sleep.']
+                    ]
+                },
+                housing: {
+                    label: 'Housing Stability',
+                    friction: 'Housing is at risk because paperwork, cost visibility, and landlord or agency contact are all unresolved.',
+                    steps: [
+                        ['Gather the three documents', 'Locate ID, proof of income, and the most recent notice or lease; photograph them into one folder.'],
+                        ['Make one factual contact', 'Send one short, factual message or call to the landlord, caseworker, or housing authority.'],
+                        ['Build a 30-day cost map', 'List what is due, what income is expected, and the single gap number.'],
+                        ['Advance one resource', 'Submit or follow up on one rental-assistance, voucher, or waitlist step.'],
+                        ['Secure a mail address', 'Confirm where mail and notices will land this month so no deadline is missed.']
+                    ]
+                },
+                workforce: {
+                    label: 'Workforce Development',
+                    friction: 'A long gap and avoidance of re-entry tasks are blocking applications, even though transferable skills are strong.',
+                    steps: [
+                        ['Draft a three-sentence work story', 'Write what I did, what I am good at, and what I want next, in plain words.'],
+                        ['Send two targeted inquiries', 'Pick two specific employers or contacts and send each one short, personal message.'],
+                        ['Close one skills or credential gap', 'Choose one gap (certification, software, reference) and book the first concrete step.'],
+                        ['Rehearse one interview answer aloud', 'Say the answer to "tell me about yourself" out loud twice, once to a person.'],
+                        ['Lock the logistics', 'Confirm transport, childcare, and clothing for the next interview or shift.']
+                    ]
+                },
+                distress: {
+                    label: 'Emotional Distress',
+                    friction: 'Intense emotion is arriving faster than regulation skills and sleep, movement, and connection anchors can absorb it.',
+                    steps: [
+                        ['Run a 90-second reset', 'Name the emotion, breathe slowly for 90 seconds, and rate intensity 0 to 10 before and after.'],
+                        ['Protect one sleep anchor', 'Set one fixed wake-time and a 30-minute screen-free wind-down.'],
+                        ['Move for 10 minutes', 'Take a short walk or stretch at a set time, with no performance goal.'],
+                        ['Tell one safe person', 'Share one honest sentence about how the week is going with someone trusted.'],
+                        ['Schedule one small restorative thing', 'Put one low-effort activity the client enjoys on the calendar.']
+                    ]
+                },
+                conflict: {
+                    label: 'Interpersonal Conflict',
+                    friction: 'A stalled relationship is consuming attention; reactive silence is replacing a clear, specific request.',
+                    steps: [
+                        ['Write the unsent message', 'Draft everything unfiltered, do not send it, then circle one fact and one feeling.'],
+                        ['Choose the one request', 'Phrase one specific, doable request for the other person.'],
+                        ['Set a pause rule', 'Agree on a phrase for pausing a heated moment and a time to return to it.'],
+                        ['Hold a 10-minute calm check-in', 'Pick a low-stakes time and keep it to ten minutes, one topic.'],
+                        ['Name your part', 'Write one sentence about your own contribution, without apology or defense.']
+                    ]
+                }
+            };
+
+            var LENSES = {
+                stoic: {
+                    label: 'Stoic / Philosophical',
+                    formulation: 'Reframe the situation around what is in the client\'s control (their response and actions) versus what is not.',
+                    notes: [
+                        'Separate what is in {c}\'s control from what is not; this step sits wholly inside it.',
+                        'Treat the urge or setback as an impression to examine, not an order to obey.',
+                        'Practice the discipline of action: small, repeatable, done regardless of mood.',
+                        'Premeditate the obstacle: decide now how {c} will respond when it appears.',
+                        'End the day with a brief review of what went well and what to adjust tomorrow.'
+                    ]
+                },
+                faith: {
+                    label: 'Faith / Spiritual',
+                    formulation: 'Anchor the plan in meaning, stewardship, community, and grace, in language that fits the client\'s own tradition.',
+                    notes: [
+                        'Frame it as stewardship: caring for what has been entrusted to {c}.',
+                        'Invite prayer, meditation, or stillness before acting, according to {c}\'s tradition.',
+                        'Lean on a faith or fellowship community for accountability and grace.',
+                        'Offer grace: a setback is a place to return from, not a verdict on {c}\'s worth.',
+                        'Close with gratitude by naming one thing received that day.'
+                    ]
+                },
+                strengths: {
+                    label: 'Strengths-First Behavioral',
+                    formulation: 'Start from what already works for the client and attach small, near-certain behaviors to existing strengths and relationships.',
+                    notes: [
+                        'Start from what {c} already does well and apply that strength to this step.',
+                        'Pair the action with something {c} enjoys so it feels like momentum, not penalty.',
+                        'Recruit a relationship {c} values as the support for this step.',
+                        'Make the step small enough that success is nearly certain, then build.',
+                        'Celebrate evidence of progress to reinforce an identity of following through.'
+                    ]
+                },
+                executive: {
+                    label: 'Executive / Pragmatic',
+                    formulation: 'Reduce the problem to one owner, one next action, one deadline, and a pass/fail check at the next session.',
+                    notes: [
+                        'Define the single next action, owner, and deadline.',
+                        'Time-box it: fifteen minutes, a calendar block, a done-by date.',
+                        'Remove the top blocker or dependency before starting.',
+                        'Track as pass/fail on the 167-Hour board and review at the next session.',
+                        'Escalate only if blocked twice; otherwise iterate.'
+                    ]
+                }
+            };
+
+            var PRESETS = {
+                marcus: {
+                    name: 'Marcus', age: 34, domain: 'addiction',
+                    quote: 'Three weeks sober and I keep ending up at the same corner after work. I don\'t want to throw this away.',
+                    strengths: 'Reliable, funny, close with his younger brother, values being a present father.',
+                    flow: 'Flow Survey: Agency 20/25 (strongest), Support 9/25 (lowest).',
+                    hope: 'HoPE Index: 54/100 (SURVIVING); lowest area Dimension 5: Others.'
+                },
+                dana: {
+                    name: 'Dana', age: 41, domain: 'workforce',
+                    quote: 'I\'ve been out of work for fourteen months since the layoff. I freeze every time I try to update my resume.',
+                    strengths: 'Organized, patient with people, twelve years in healthcare billing.',
+                    flow: 'Flow Survey: Support 18/25 (strongest), Tools 8/25 (lowest).',
+                    hope: 'HoPE Index: 61/100 (STABILIZING); lowest area Dimension 3: Resources.'
+                },
+                jordan: {
+                    name: 'Jordan', age: 27, domain: 'conflict',
+                    quote: 'My roommate and I haven\'t spoken in a week and rent is due. I can\'t keep living in this tension.',
+                    strengths: 'Honest, quick to repair once the ice breaks, steady part-time job.',
+                    flow: 'Flow Survey: Actions 17/25 (strongest), Agency 10/25 (lowest).',
+                    hope: 'HoPE Index: 58/100 (STABILIZING); lowest area Dimension 4: Self.'
+                }
+            };
+
+            var state = { source: 'marcus', lens: 'stoic', domain: 'addiction', picked: [], done: {}, client: null };
+
+            function $(id) { return document.getElementById(id); }
+            function el(tag, cls, text) {
+                var n = document.createElement(tag);
+                if (cls) n.className = cls;
+                if (text != null) n.textContent = text;
+                return n;
+            }
+            function firstName(name) { return String(name || 'the client').trim().split(/\s+/)[0] || 'the client'; }
+            function clean(v, max) {
+                var s = String(v == null ? '' : v).replace(/\s+/g, ' ').trim();
+                return s.length > max ? s.slice(0, max - 1) + '\u2026' : s;
+            }
+
+            function readDossier() {
+                try {
+                    if (window.ThriveCoachingDossier && typeof window.ThriveCoachingDossier.readDossier === 'function') {
+                        var d = window.ThriveCoachingDossier.readDossier();
+                        return d && typeof d === 'object' ? d : {};
+                    }
+                } catch (_) {}
+                return {};
+            }
+
+            function guessDomain(text) {
+                var t = String(text || '').toLowerCase();
+                if (/sober|craving|recover|relapse|addict|using/.test(t)) return 'addiction';
+                if (/rent|landlord|housing|evict|lease|shelter/.test(t)) return 'housing';
+                if (/job|work|career|resume|interview|employ|hire/.test(t)) return 'workforce';
+                if (/argu|conflict|partner|spouse|roommate|family|trust|relationship/.test(t)) return 'conflict';
+                return 'distress';
+            }
+
+            function dossierClient() {
+                var d = readDossier();
+                var flow = d.flowSurvey || null;
+                var rep = d.thriveReport || null;
+                var hope = d.hopeIndex || null;
+                var audit = d.practiceAudit || null;
+                var pillars = rep && rep.pillars && typeof rep.pillars === 'object' ? rep.pillars : null;
+                var strengthBits = [];
+                if (pillars) {
+                    ['traits', 'values', 'relationships', 'hobbies', 'interests', 'experiences'].forEach(function (k) {
+                        var v = clean(pillars[k], 90);
+                        if (v) strengthBits.push(k.charAt(0).toUpperCase() + k.slice(1) + ': ' + v);
+                    });
+                }
+                var problem = clean(flow && flow.problem, 240);
+                var flowLine = '';
+                if (flow && flow.dimensions) {
+                    var parts = [];
+                    ['Agency', 'Actions', 'Support', 'Tools'].forEach(function (k) {
+                        if (typeof flow.dimensions[k] === 'number') parts.push(k + ' ' + flow.dimensions[k] + '/25');
+                    });
+                    if (parts.length) flowLine = 'Flow Survey: ' + parts.join(', ') + '.';
+                }
+                var hopeLine = '';
+                if (hope && typeof hope.totalHoPEScore100 === 'number') {
+                    hopeLine = 'HoPE Index: ' + hope.totalHoPEScore100 + '/100 (' + clean(hope.tierText, 20) + ')' +
+                        (hope.lowestDimension && hope.lowestDimension.name ? '; lowest area ' + clean(hope.lowestDimension.name, 40) : '') + '.';
+                }
+                var name = clean((rep && (rep.interviewee || '')) || (audit && audit.firstName) || '', 40);
+                if (!(problem || strengthBits.length || flowLine || hopeLine)) return null;
+                return {
+                    name: name || 'Your client', age: null,
+                    domain: guessDomain(problem),
+                    quote: problem || 'No problem statement saved in the Flow Survey yet.',
+                    strengths: strengthBits.length ? strengthBits.join(' | ') : 'No THRiVE Report pillars saved yet.',
+                    flow: flowLine || 'Flow Survey: not completed.',
+                    hope: hopeLine || 'HoPE Index: not completed.'
+                };
+            }
+
+            function currentClient() {
+                if (state.source === 'dossier') return dossierClient() || PRESETS.marcus;
+                return PRESETS[state.source] || PRESETS.marcus;
+            }
+
+            function stepsFor() {
+                var dom = DOMAINS[state.domain] || DOMAINS.distress;
+                var lens = LENSES[state.lens] || LENSES.stoic;
+                var c = firstName(state.client && state.client.name);
+                return dom.steps.map(function (s, i) {
+                    return { id: state.domain + '-' + i, title: s[0], text: s[1], lens: lens.notes[i].replace(/\{c\}/g, c) };
+                });
+            }
+
+            function windowLabel(i) {
+                return ['Within 24 hours', 'Days 2\u20133', 'Days 4\u20136'][i] || 'This week';
+            }
+
+            function renderSteps() {
+                var list = $('dap-steps');
+                list.textContent = '';
+                var steps = stepsFor();
+                var full = state.picked.length >= MAX_PICKS;
+                steps.forEach(function (s, i) {
+                    var li = el('li', 'dap-step' + (state.picked.indexOf(s.id) !== -1 ? ' is-selected' : ''));
+                    var label = el('label');
+                    var cb = el('input');
+                    cb.type = 'checkbox';
+                    cb.checked = state.picked.indexOf(s.id) !== -1;
+                    cb.setAttribute('data-dap-pick', s.id);
+                    cb.setAttribute('aria-label', 'Add to 167-Hour Action Board: ' + s.title);
+                    if (full && !cb.checked) cb.setAttribute('aria-disabled', 'true');
+                    var wrap = el('span');
+                    wrap.appendChild(el('span', 'dap-step-title', (i + 1) + '. ' + s.title));
+                    wrap.appendChild(el('span', 'dap-step-text', s.text));
+                    wrap.appendChild(el('span', 'dap-step-lens', s.lens));
+                    label.appendChild(cb);
+                    label.appendChild(wrap);
+                    li.appendChild(label);
+                    list.appendChild(li);
+                });
+                $('dap-limit-count').textContent = state.picked.length + ' of ' + MAX_PICKS + ' selected';
+            }
+
+            function pickedSteps() {
+                var map = {};
+                stepsFor().forEach(function (s) { map[s.id] = s; });
+                return state.picked.map(function (id) { return map[id]; }).filter(Boolean);
+            }
+
+            function renderBoard() {
+                var list = $('dap-board-list');
+                list.textContent = '';
+                var items = pickedSteps();
+                items.forEach(function (s, i) {
+                    var isDone = !!state.done[s.id];
+                    var li = el('li', 'dap-board-item' + (isDone ? ' is-done' : ''));
+                    var label = el('label');
+                    var cb = el('input');
+                    cb.type = 'checkbox';
+                    cb.checked = isDone;
+                    cb.setAttribute('data-dap-done', s.id);
+                    cb.setAttribute('aria-label', 'Mark complete: ' + s.title);
+                    var wrap = el('span');
+                    wrap.appendChild(el('span', 'dap-board-window', windowLabel(i)));
+                    wrap.appendChild(el('span', 'dap-board-title', s.title));
+                    label.appendChild(cb);
+                    label.appendChild(wrap);
+                    li.appendChild(label);
+                    list.appendChild(li);
+                });
+                var doneCount = items.filter(function (s) { return state.done[s.id]; }).length;
+                $('dap-board-meter').textContent = doneCount + ' of ' + items.length + ' done';
+                $('dap-board-empty').hidden = items.length > 0;
+            }
+
+            function buildNote() {
+                var c = state.client;
+                var dom = DOMAINS[state.domain] || DOMAINS.distress;
+                var lens = LENSES[state.lens] || LENSES.stoic;
+                var items = pickedSteps();
+                var who = c.name + (c.age ? ' (' + c.age + ')' : '');
+                var lines = [];
+                lines.push('DAP NOTE \u2014 TRAINING SIMULATION (fictional composite or self-entered data; no PHI)');
+                lines.push('Client: ' + who + '   Domain: ' + dom.label + '   Lens: ' + lens.label);
+                lines.push('');
+                lines.push('D \u2014 DATA');
+                lines.push('\u2022 Client statement: "' + c.quote + '"');
+                lines.push('\u2022 Strengths (THRiVE pillars): ' + c.strengths);
+                lines.push('\u2022 ' + c.flow);
+                lines.push('\u2022 ' + c.hope);
+                lines.push('');
+                lines.push('A \u2014 ASSESSMENT');
+                lines.push('\u2022 Primary friction: ' + dom.friction);
+                lines.push('\u2022 Lens formulation (' + lens.label + '): ' + lens.formulation);
+                lines.push('\u2022 Readiness: ' + (items.length ? items.length + ' micro-action' + (items.length > 1 ? 's' : '') + ' selected for the 167 hours between sessions.' : 'No micro-action selected yet; choose one to three to complete the plan.'));
+                lines.push('');
+                lines.push('P \u2014 PLAN');
+                if (items.length) {
+                    items.forEach(function (s, i) {
+                        lines.push((i + 1) + '. [' + windowLabel(i) + '] ' + s.title + ' \u2014 ' + s.text + (state.done[s.id] ? ' (completed)' : ''));
+                    });
+                } else {
+                    lines.push('1. (none selected)');
+                }
+                lines.push('\u2022 Next session: review 167-Hour Action Board completion, adjust lens if the client disengages, and update the dossier.');
+                return lines.join('\n');
+            }
+
+            function renderNote() {
+                $('dap-note').textContent = buildNote();
+                var d = new Date();
+                $('dap-note-date').textContent = d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            function renderAll() {
+                renderSteps();
+                renderBoard();
+                renderNote();
+            }
+
+            function setRadio(groupId, attr, value) {
+                var btns = $(groupId).querySelectorAll('[' + attr + ']');
+                Array.prototype.forEach.call(btns, function (b) {
+                    var on = b.getAttribute(attr) === value;
+                    b.setAttribute('aria-checked', on ? 'true' : 'false');
+                    b.tabIndex = on ? 0 : -1;
+                });
+            }
+
+            function selectSource(src) {
+                if (src === 'dossier' && !dossierClient()) {
+                    $('dap-limit-msg').textContent = 'No saved dossier yet. Complete the Flow Survey, THRiVE Report, or HoPE Index first, or use a preset.';
+                    return;
+                }
+                state.source = src;
+                state.client = currentClient();
+                state.domain = state.client.domain;
+                state.picked = [];
+                state.done = {};
+                $('dap-domain').value = state.domain;
+                $('dap-limit-msg').textContent = '';
+                setRadio('dap-preset-group', 'data-dap-source', src);
+                renderAll();
+            }
+
+            function refreshDossierButton() {
+                var has = !!dossierClient();
+                var btn = $('dap-source-dossier');
+                $('dap-dossier-hint').textContent = has
+                    ? 'Uses your saved Flow Survey, THRiVE Report and HoPE Index'
+                    : 'Nothing saved yet \u2014 complete a survey to unlock';
+                btn.setAttribute('data-has-dossier', has ? 'true' : 'false');
+                if (state.source === 'dossier') {
+                    if (has) { state.client = currentClient(); renderNote(); } else { selectSource('marcus'); }
+                }
+            }
+
+            function setupRadioKeys(groupId) {
+                $(groupId).addEventListener('keydown', function (e) {
+                    var keys = ['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'];
+                    if (keys.indexOf(e.key) === -1) return;
+                    var btns = Array.prototype.slice.call($(groupId).querySelectorAll('[role="radio"]'));
+                    var idx = btns.indexOf(document.activeElement);
+                    if (idx === -1) return;
+                    e.preventDefault();
+                    var step = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1;
+                    var next = btns[(idx + step + btns.length) % btns.length];
+                    next.focus();
+                    next.click();
+                });
+            }
+
+            function init() {
+                if (!$('dap-gaps-simulator')) return;
+                state.client = currentClient();
+                state.domain = state.client.domain;
+                $('dap-domain').value = state.domain;
+                setRadio('dap-preset-group', 'data-dap-source', state.source);
+                setRadio('dap-lens-group', 'data-dap-lens', state.lens);
+                refreshDossierButton();
+                renderAll();
+
+                $('dap-preset-group').addEventListener('click', function (e) {
+                    var b = e.target.closest('[data-dap-source]');
+                    if (b) selectSource(b.getAttribute('data-dap-source'));
+                });
+                $('dap-lens-group').addEventListener('click', function (e) {
+                    var b = e.target.closest('[data-dap-lens]');
+                    if (!b) return;
+                    state.lens = b.getAttribute('data-dap-lens');
+                    setRadio('dap-lens-group', 'data-dap-lens', state.lens);
+                    renderAll();
+                });
+                setupRadioKeys('dap-preset-group');
+                setupRadioKeys('dap-lens-group');
+                $('dap-domain').addEventListener('change', function (e) {
+                    state.domain = e.target.value in DOMAINS ? e.target.value : 'distress';
+                    state.picked = [];
+                    state.done = {};
+                    $('dap-limit-msg').textContent = '';
+                    renderAll();
+                });
+                $('dap-steps').addEventListener('change', function (e) {
+                    var cb = e.target.closest('[data-dap-pick]');
+                    if (!cb) return;
+                    var id = cb.getAttribute('data-dap-pick');
+                    var at = state.picked.indexOf(id);
+                    if (cb.checked && at === -1) {
+                        if (state.picked.length >= MAX_PICKS) {
+                            cb.checked = false;
+                            $('dap-limit-msg').textContent = 'The board holds up to ' + MAX_PICKS + ' micro-actions. Untick one to swap it.';
+                            return;
+                        }
+                        state.picked.push(id);
+                    } else if (!cb.checked && at !== -1) {
+                        state.picked.splice(at, 1);
+                        delete state.done[id];
+                    }
+                    $('dap-limit-msg').textContent = '';
+                    renderAll();
+                });
+                $('dap-board-list').addEventListener('change', function (e) {
+                    var cb = e.target.closest('[data-dap-done]');
+                    if (!cb) return;
+                    state.done[cb.getAttribute('data-dap-done')] = cb.checked;
+                    renderBoard();
+                    renderNote();
+                });
+                $('dap-copy-btn').addEventListener('click', function () {
+                    var text = buildNote();
+                    var status = $('dap-copy-status');
+                    var done = function (ok) {
+                        status.textContent = ok ? 'DAP note copied to clipboard.' : 'Copy was blocked by the browser. Select the note text and copy it manually.';
+                    };
+                    var fallback = function () {
+                        if (window.ThriveCoachingDossier && typeof window.ThriveCoachingDossier.copyTextWithFallback === 'function') {
+                            window.ThriveCoachingDossier.copyTextWithFallback(text).then(done, function () { done(false); });
+                        } else {
+                            done(false);
+                        }
+                    };
+                    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                        navigator.clipboard.writeText(text).then(function () { done(true); }, fallback);
+                    } else {
+                        fallback();
+                    }
+                });
+                $('dap-print-btn').addEventListener('click', function () {
+                    renderNote();
+                    if (typeof window.print === 'function') window.print();
+                });
+                window.addEventListener('thrive-dossier-updated', refreshDossierButton);
+                window.addEventListener('storage', refreshDossierButton);
+            }
+
+            window.ThriveDapSimulator = {
+                getNote: function () { return buildNote(); },
+                getState: function () { return JSON.parse(JSON.stringify({ source: state.source, lens: state.lens, domain: state.domain, picked: state.picked, done: state.done })); },
+                refreshDossier: refreshDossierButton
+            };
+
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+            else init();
+            window.addEventListener('load', refreshDossierButton);
         })();
     </script>
     <script src="script.js" defer></script>
