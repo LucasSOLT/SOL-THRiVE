@@ -272,13 +272,16 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 28px;
-    height: 20px;
+    width: 44px;
+    height: 44px;
+    padding: 12px 8px;
+    margin-left: -8px;
     background: transparent;
     border: none;
     cursor: pointer;
     position: relative;
     z-index: 101;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .hamburger:focus-visible {
@@ -316,6 +319,7 @@ a {
     right: -100%;
     width: 100%;
     height: 100vh;
+    height: 100dvh;
     background-color: #141824;
     display: flex;
     flex-direction: column;
@@ -3360,14 +3364,18 @@ button.resume-btn-secondary:hover,
 
 .contact-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(2rem, 4vw, 3.5rem);
     align-items: start;
 }
 
+.contact-grid > * {
+    min-width: 0;
+}
+
 @media (max-width: 860px) {
     .contact-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -3732,14 +3740,18 @@ button.resume-btn-secondary:hover,
 
 .lunch-learn-grid {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     gap: clamp(2rem, 4vw, 3.5rem);
     align-items: start;
 }
 
+.lunch-learn-grid > * {
+    min-width: 0;
+}
+
 @media (max-width: 920px) {
     .lunch-learn-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -4311,4 +4323,84 @@ button.resume-btn-secondary:hover,
     background: #FAF5FF;
     border: 2px solid var(--accent-purple, #8B2FC9);
     box-shadow: 4px 4px 0 var(--accent-purple, #8B2FC9);
+}
+
+/* ==========================================
+   BATCH 1 — MOBILE VIEWPORT & TOUCH ERGONOMICS (320px–430px)
+   ========================================== */
+/* Scroll lock while the mobile drawer is open (released on close / Escape / backdrop click / resize). */
+html.nav-open,
+body.nav-open {
+    overflow: hidden;
+    overscroll-behavior: contain;
+}
+
+.nav-menu {
+    overscroll-behavior: contain;
+}
+
+/* Drawer links keep a >= 44px touch target. */
+.nav-menu a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-menu .dropdown-content a {
+    min-height: 44px;
+}
+
+@media (max-width: 480px) {
+    /* Nowrap pill buttons must be allowed to wrap on narrow phones instead of pushing the page wider. */
+    .cta-button {
+        white-space: normal;
+        max-width: 100%;
+        min-height: 44px;
+        line-height: 1.25;
+    }
+    .nav-menu a {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .cta-button,
+    .nav-cta-pill {
+        min-height: 44px;
+    }
+}
+
+/* Touch ergonomics: every tappable control reaches >= 44x44px on phones/tablets and coarse pointers. */
+@media (max-width: 1024px), (pointer: coarse) {
+    .footer-nav {
+        gap: 0.25rem 1rem;
+    }
+    .footer-nav a,
+    .footer-contact a,
+    .framework-link,
+    .quick-link-pill,
+    .challenge-back-link,
+    .challenge-tab,
+    .btn-session-sync,
+    .brand-logo-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+    .footer-nav a {
+        padding: 0 0.35rem;
+    }
+    .tz-select-input,
+    .contact-form-card input:not([type="checkbox"]):not([type="radio"]),
+    .contact-form-card select,
+    .contact-form-card textarea,
+    .lunch-learn-section input:not([type="checkbox"]):not([type="radio"]),
+    .lunch-learn-section select {
+        min-height: 44px;
+    }
+    #open-survey-settings-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
 }

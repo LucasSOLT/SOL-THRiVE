@@ -146,7 +146,12 @@ main{max-width:1240px;margin:auto;padding:36px 28px 80px}
 .success{text-align:center;padding:36px 12px}
 .success h2{font-size:2rem;margin:14px 0 8px}
 .back{background:none;border:0;color:var(--violet);cursor:pointer;font-size:.88rem;margin-bottom:12px;font-family:'Inter'}
-@media(max-width:900px){.grid{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.row2{grid-template-columns:minmax(0,1fr)}
+  /* Mobile: the interactive Practice Readiness Audit leads; the story video follows it. */
+  #v-intro .grid>#right-col{order:-1}
+  #v-intro .hero{margin-bottom:20px}
+  #v-intro .hero p{font-size:1rem}}
+@media(max-width:480px){.card{padding:20px 16px;border-radius:20px}.rate{gap:6px}.card-opt{min-height:44px;padding:10px 0}.hero h1{font-size:clamp(1.65rem,8vw,2rem)}.btn{min-height:44px}.slots{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* ===== One-screen layout (desktop): content-sized, centered, equal-height columns ===== */
 @media(min-width:901px) and (min-height:620px){

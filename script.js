@@ -49,26 +49,50 @@ const initThriveUI = () => {
 
     if (hamburger && navMenu) {
         hamburger.setAttribute('aria-expanded', 'false');
+        if (navMenu.id) hamburger.setAttribute('aria-controls', navMenu.id);
+        const lockRoots = [document.documentElement, document.body];
+
+        const setDrawerOpen = (open, restoreFocus) => {
+            navMenu.classList.toggle('open', open);
+            hamburger.classList.toggle('open', open);
+            hamburger.setAttribute('aria-expanded', String(open));
+            lockRoots.forEach(el => el && el.classList.toggle('nav-open', open));
+            if (open) {
+                const firstLink = navMenu.querySelector('a');
+                if (firstLink) { try { firstLink.focus({ preventScroll: true }); } catch (_) {} }
+            } else if (restoreFocus) {
+                try { hamburger.focus({ preventScroll: true }); } catch (_) {}
+            }
+        };
+        window.closeThriveDrawer = () => setDrawerOpen(false, false);
+
         hamburger.addEventListener('click', () => {
-            const isOpen = navMenu.classList.toggle('open');
-            hamburger.classList.toggle('open', isOpen);
-            hamburger.setAttribute('aria-expanded', String(isOpen));
+            setDrawerOpen(!navMenu.classList.contains('open'), false);
         });
 
         navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('open');
-                hamburger.classList.remove('open');
-                hamburger.setAttribute('aria-expanded', 'false');
-            });
+            link.addEventListener('click', () => setDrawerOpen(false, false));
+        });
+
+        // Backdrop click: any click on the drawer surface itself (outside its links/menu list) closes it.
+        navMenu.addEventListener('click', (e) => {
+            if (e.target === navMenu || e.target.classList.contains('menu-title')) {
+                setDrawerOpen(false, true);
+            }
         });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && navMenu.classList.contains('open')) {
-                navMenu.classList.remove('open');
-                hamburger.classList.remove('open');
-                hamburger.setAttribute('aria-expanded', 'false');
+                setDrawerOpen(false, true);
             }
+        });
+
+        // Release the scroll lock if the viewport grows into desktop layout or the page is restored from bfcache.
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024 && navMenu.classList.contains('open')) setDrawerOpen(false, false);
+        });
+        window.addEventListener('pageshow', () => {
+            if (navMenu.classList.contains('open')) setDrawerOpen(false, false);
         });
     }
 
